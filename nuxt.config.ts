@@ -1,6 +1,6 @@
 // https://nuxt.com/docs/api/configuration/nuxt-config
 export default defineNuxtConfig({
-  devtools: { enabled: true },
+  devtools: { enabled: false },
   modules: [
     '@nuxtjs/tailwindcss',
     '@vueuse/nuxt'
@@ -14,5 +14,6 @@ export default defineNuxtConfig({
   build: {
     transpile: ['vue3-roulette']
   },
-  ssr: false
+  ssr: false,
+  target: 'static'
 })
