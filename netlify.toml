@@ -1,0 +1,22 @@
+[build]
+  command = "npm run build"
+  publish = ".output/public"
+
+[build.environment]
+  NODE_VERSION = "18"
+
+[[redirects]]
+  from = "/*"
+  to = "/.netlify/functions/server"
+  status = 200
+
+[functions]
+  directory = ".netlify/functions-internal"
+
+[[headers]]
+  for = "/_nuxt/*"
+  [headers.values]
+    Content-Type = "application/javascript"
+
+[dev]
+  command = "npm run dev"

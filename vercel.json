@@ -1,0 +1,18 @@
+{
+  "buildCommand": "npm run build",
+  "outputDirectory": ".output/public",
+  "devCommand": "npm run dev",
+  "installCommand": "npm install",
+  "framework": "nuxtjs",
+  "functions": {
+    ".output/server/**": {
+      "maxDuration": 30
+    }
+  },
+  "rewrites": [
+    {
+      "source": "/(.*)",
+      "destination": "/api/server"
+    }
+  ]
+}

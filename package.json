@@ -1,0 +1,27 @@
+{
+  "name": "bonocopas-wheel-frontend",
+  "version": "1.0.0",
+  "description": "Frontend for prize wheel application",
+  "private": true,
+  "scripts": {
+    "build": "nuxt build",
+    "dev": "nuxt dev",
+    "generate": "nuxt generate",
+    "preview": "nuxt preview",
+    "postinstall": "nuxt prepare"
+  },
+  "devDependencies": {
+    "@nuxt/devtools": "latest",
+    "@nuxtjs/tailwindcss": "^6.8.4"
+  },
+  "dependencies": {
+    "@headlessui/vue": "^1.7.16",
+    "@heroicons/vue": "^2.0.18",
+    "@nuxt/ui": "^2.11.1",
+    "@nuxtjs/color-mode": "^3.3.2",
+    "@vueuse/nuxt": "^10.5.0",
+    "axios": "^1.6.2",
+    "qrcode-vue3": "^1.7.1",
+    "vue3-roulette": "^0.3.3"
+  }
+}
