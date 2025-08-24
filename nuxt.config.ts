@@ -13,5 +13,8 @@ export default defineNuxtConfig({
   },
   build: {
     transpile: ['vue3-roulette']
+  },
+  nitro: {
+    preset: 'vercel'
   }
 })
