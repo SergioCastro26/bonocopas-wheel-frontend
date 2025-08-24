@@ -19,6 +19,7 @@
     "@heroicons/vue": "^2.0.18",
     "@nuxt/ui": "^2.11.1",
     "@nuxtjs/color-mode": "^3.3.2",
+    "@nuxtjs/vercel-builder": "^0.25.0",
     "@vueuse/nuxt": "^10.5.0",
     "axios": "^1.6.2",
     "qrcode-vue3": "^1.7.1",
