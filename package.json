@@ -22,7 +22,7 @@
     "@nuxtjs/vercel-builder": "^0.25.0",
     "@vueuse/nuxt": "^10.5.0",
     "axios": "^1.6.2",
-    "qrcode-vue3": "^1.7.1",
+    "qr-code-styling": "^1.6.0-rc.1",
     "vue3-roulette": "^0.3.3"
   }
 }

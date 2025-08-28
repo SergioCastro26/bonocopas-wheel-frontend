@@ -48,23 +48,6 @@
       <p class="mt-4 text-gray-600 dark:text-gray-400">Cargando premios...</p>
     </div>
 
-    <!-- Empty State -->
-    <div v-else-if="spins.length === 0" class="text-center py-12">
-      <div class="mx-auto h-24 w-24 bg-gray-100 dark:bg-gray-700 rounded-full flex items-center justify-center mb-4">
-        <svg class="h-12 w-12 text-gray-400" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-          <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 8v4l3 3m6-3a9 9 0 11-18 0 9 9 0 0118 0z" />
-        </svg>
-      </div>
-      <h3 class="text-lg font-medium text-gray-900 dark:text-white mb-2">No tienes premios aún</h3>
-      <p class="text-gray-600 dark:text-gray-400 mb-6">¡Ve a la ruleta y gana tu primer premio!</p>
-      <NuxtLink
-        to="/wheel"
-        class="inline-flex items-center px-4 py-2 border border-transparent text-sm font-medium rounded-md text-white bg-blue-600 hover:bg-blue-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-blue-500 transition-colors duration-200"
-      >
-        🎯 Ir a la Ruleta
-      </NuxtLink>
-    </div>
-
     <!-- Prizes List -->
     <div v-else>
       <!-- Active Prizes -->
@@ -107,6 +90,7 @@
             <div class="text-xs text-gray-500 dark:text-gray-400 mb-4">
               <p>Ganado: {{ formatDate(spin.date) }}</p>
               <p>Expira: {{ formatDate(spin.expiresAt) }}</p>
+              <p>ID: {{ spin.id }}</p>
             </div>
 
             <button
@@ -114,7 +98,7 @@
               :disabled="isClaimingPrize === spin.id"
               class="w-full inline-flex justify-center items-center px-4 py-2 border border-transparent text-sm font-medium rounded-md text-white bg-red-600 hover:bg-red-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-red-500 disabled:opacity-50 disabled:cursor-not-allowed transition-colors duration-200"
             >
-              <span v-if="isClaimingPrize !== spin.id">🎁 Autorización Camarero</span>
+              <span v-if="isClaimingPrize !== spin.id">🎁 Reclamar Premio</span>
               <span v-else class="flex items-center">
                 <svg class="animate-spin -ml-1 mr-2 h-4 w-4 text-white" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24">
                   <circle class="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" stroke-width="4"></circle>
@@ -155,6 +139,7 @@
             <div class="text-xs text-gray-500 dark:text-gray-400 mb-4">
               <p>Ganado: {{ formatDate(spin.date) }}</p>
               <p>Expiró: {{ formatDate(spin.expiresAt) }}</p>
+              <p>ID: {{ spin.id }}</p>
             </div>
 
             <button
@@ -195,6 +180,7 @@
             <div class="text-xs text-gray-500 dark:text-gray-400 mb-4">
               <p>Ganado: {{ formatDate(spin.date) }}</p>
               <p>Reclamado: {{ formatDate(spin.expiresAt) }}</p>
+              <p>ID: {{ spin.id }}</p>
             </div>
 
             <button
@@ -205,6 +191,23 @@
             </button>
           </div>
         </div>
+      </div>
+
+      <!-- Empty State -->
+      <div v-if="spins.length === 0" class="text-center py-12">
+        <div class="mx-auto h-24 w-24 bg-gray-100 dark:bg-gray-700 rounded-full flex items-center justify-center mb-4">
+          <svg class="h-12 w-12 text-gray-400" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 8v4l3 3m6-3a9 9 0 11-18 0 9 9 0 0118 0z" />
+          </svg>
+        </div>
+        <h3 class="text-lg font-medium text-gray-900 dark:text-white mb-2">No tienes premios aún</h3>
+        <p class="text-gray-600 dark:text-gray-400 mb-6">¡Ve a la ruleta y gana tu primer premio!</p>
+        <NuxtLink
+          to="/wheel"
+          class="inline-flex items-center px-4 py-2 border border-transparent text-sm font-medium rounded-md text-white bg-blue-600 hover:bg-blue-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-blue-500 transition-colors duration-200"
+        >
+          🎯 Ir a la Ruleta
+        </NuxtLink>
       </div>
     </div>
 
@@ -220,35 +223,6 @@
         Volver a la Ruleta
       </NuxtLink>
     </div>
-
-    <!-- Claim Success Modal -->
-    <div v-if="showClaimModal" class="fixed inset-0 bg-gray-600 bg-opacity-50 overflow-y-auto h-full w-full z-50 flex items-center justify-center p-4">
-      <div class="relative bg-white dark:bg-gray-800 rounded-lg shadow-xl max-w-md w-full mx-auto">
-        <div class="p-6">
-          <div class="flex items-center justify-center w-12 h-12 mx-auto bg-green-100 dark:bg-green-900 rounded-full mb-4">
-            <svg class="w-6 h-6 text-green-600 dark:text-green-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-              <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 13l4 4L19 7" />
-            </svg>
-          </div>
-          
-          <div class="text-center">
-            <h3 class="text-lg font-semibold text-gray-900 dark:text-white mb-2">
-              🏆 Premio Verificado
-            </h3>
-            <p class="text-sm text-gray-600 dark:text-gray-400 mb-6 whitespace-pre-line">
-              {{ claimMessage }}
-            </p>
-            
-            <button
-              @click="closeClaimModal"
-              class="w-full inline-flex justify-center items-center px-4 py-2 bg-green-600 border border-transparent rounded-md font-medium text-white hover:bg-green-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-green-500 transition-colors duration-200"
-            >
-              Entendido
-            </button>
-          </div>
-        </div>
-      </div>
-    </div>
   </div>
 </template>
 
@@ -261,37 +235,19 @@ const spins = ref([])
 const isLoading = ref(true)
 const isClaimingPrize = ref(null)
 const countdownInterval = ref(null)
-const showClaimModal = ref(false)
-const claimMessage = ref('')
 
 // Check authentication on mount
 onMounted(async () => {
-  try {
-    isLoading.value = true
-    
-    // Check if user is already loaded
-    if (user.value) {
-      console.log('User already authenticated:', user.value.email)
-      await loadPrizes()
-      startCountdownTimer()
-      return
-    }
-    
-    // Try to authenticate
+  if (!user.value) {
     const isAuthenticated = await checkAuth()
     if (!isAuthenticated) {
-      console.log('Authentication failed, redirecting to login')
       await navigateTo('/login')
       return
     }
-    
-    console.log('User authenticated successfully:', user.value?.email)
-    await loadPrizes()
-    startCountdownTimer()
-  } catch (error) {
-    console.error('Error in authentication flow:', error)
-    await navigateTo('/login')
   }
+  
+  await loadPrizes()
+  startCountdownTimer()
 })
 
 onUnmounted(() => {
@@ -321,18 +277,13 @@ const loadPrizes = async () => {
     isLoading.value = true
     const response = await $api.get('/spin/history', {
       withCredentials: true,
-      params: { limit: 100 }
+      params: { limit: 100 } // Get all prizes
     })
     
     spins.value = response.data.spins || []
-    console.log('Loaded spins:', spins.value.length)
   } catch (error) {
     console.error('Error loading prizes:', error)
-    // If API call fails due to auth, redirect to login
-    if (error.response?.status === 401) {
-      console.log('API returned 401, redirecting to login')
-      await navigateTo('/login')
-    }
+    // Show error notification
   } finally {
     isLoading.value = false
   }
@@ -348,25 +299,18 @@ const claimPrize = async (spin) => {
       withCredentials: true
     })
     
-    // Show styled modal instead of alert
-    claimMessage.value = response.data.message
-    showClaimModal.value = true
+    // Show the warning message from backend
+    alert(response.data.message)
     
+    // Reload prizes to update the state
     await loadPrizes()
     
   } catch (error) {
     console.error('Error claiming prize:', error)
-    // Show error in styled modal too
-    claimMessage.value = error.response?.data?.message || 'Error al reclamar el premio'
-    showClaimModal.value = true
+    alert(error.response?.data?.message || 'Error al reclamar el premio')
   } finally {
     isClaimingPrize.value = null
   }
-}
-
-const closeClaimModal = () => {
-  showClaimModal.value = false
-  claimMessage.value = ''
 }
 
 const getTimeRemaining = (expiresAt) => {
@@ -393,6 +337,7 @@ const getTimeRemaining = (expiresAt) => {
 
 const startCountdownTimer = () => {
   countdownInterval.value = setInterval(() => {
+    // Force reactivity update for countdown timers
     spins.value = [...spins.value]
   }, 1000)
 }
@@ -412,8 +357,8 @@ const handleLogout = async () => {
   await logout()
 }
 
-// Remove auth middleware to prevent redirect issues
-// definePageMeta({
-//   middleware: 'auth'
-// })
+// Set page meta
+definePageMeta({
+  middleware: 'auth'
+})
 </script>

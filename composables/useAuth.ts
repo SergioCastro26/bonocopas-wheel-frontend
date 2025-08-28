@@ -6,10 +6,10 @@ export const useAuth = () => {
   const isLoading = ref(false)
 
   // Login function
-  const login = async (email: string) => {
+  const login = async (email: string, phone: string) => {
     try {
       isLoading.value = true
-      const response = await $api.post('/auth/login', { email }, {
+      const response = await $api.post('/auth/login', { email, phone }, {
         withCredentials: true
       })
       user.value = response.data.user

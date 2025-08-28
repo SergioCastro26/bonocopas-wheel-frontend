@@ -11,24 +11,43 @@
           Accede a BonoCopas
         </h2>
         <p class="mt-2 text-center text-sm text-gray-600 dark:text-gray-400">
-          Ingresa tu correo electrónico para comenzar a girar la ruleta
+          Ingresa tu correo electrónico y número de celular para comenzar a girar la ruleta
         </p>
       </div>
       
       <form class="mt-8 space-y-6" @submit.prevent="handleLogin">
-        <div>
-          <label for="email" class="sr-only">Correo electrónico</label>
-          <input
-            id="email"
-            v-model="email"
-            name="email"
-            type="email"
-            autocomplete="email"
-            required
-            class="appearance-none rounded-md relative block w-full px-3 py-2 border border-gray-300 dark:border-gray-600 placeholder-gray-500 dark:placeholder-gray-400 text-gray-900 dark:text-white bg-white dark:bg-gray-800 focus:outline-none focus:ring-blue-500 focus:border-blue-500 focus:z-10 sm:text-sm"
-            placeholder="Correo electrónico"
-            :disabled="isLoading"
-          />
+        <div class="space-y-4">
+          <div>
+            <label for="email" class="sr-only">Correo electrónico</label>
+            <input
+              id="email"
+              v-model="email"
+              name="email"
+              type="email"
+              autocomplete="email"
+              required
+              class="appearance-none rounded-md relative block w-full px-3 py-2 border border-gray-300 dark:border-gray-600 placeholder-gray-500 dark:placeholder-gray-400 text-gray-900 dark:text-white bg-white dark:bg-gray-800 focus:outline-none focus:ring-blue-500 focus:border-blue-500 focus:z-10 sm:text-sm"
+              placeholder="Correo electrónico"
+              :disabled="isLoading"
+            />
+          </div>
+          
+          <div>
+            <label for="phone" class="sr-only">Número de celular</label>
+            <input
+              id="phone"
+              v-model="phone"
+              name="phone"
+              type="tel"
+              autocomplete="tel"
+              required
+              class="appearance-none rounded-md relative block w-full px-3 py-2 border border-gray-300 dark:border-gray-600 placeholder-gray-500 dark:placeholder-gray-400 text-gray-900 dark:text-white bg-white dark:bg-gray-800 focus:outline-none focus:ring-blue-500 focus:border-blue-500 focus:z-10 sm:text-sm"
+              placeholder="Número de celular (ej: 3001234567)"
+              :disabled="isLoading"
+              @input="validatePhone"
+            />
+            <p v-if="phoneError" class="mt-1 text-sm text-red-600 dark:text-red-400">{{ phoneError }}</p>
+          </div>
         </div>
 
         <div v-if="error" class="bg-red-50 dark:bg-red-900/20 border border-red-200 dark:border-red-800 rounded-md p-4">
@@ -47,7 +66,7 @@
         <div>
           <button
             type="submit"
-            :disabled="isLoading || !email"
+            :disabled="isLoading || !email || !phone || !!phoneError"
             class="group relative w-full flex justify-center py-2 px-4 border border-transparent text-sm font-medium rounded-md text-white bg-blue-600 hover:bg-blue-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-blue-500 disabled:opacity-50 disabled:cursor-not-allowed transition-colors duration-200"
           >
             <span v-if="!isLoading">Ingresar</span>
@@ -74,7 +93,9 @@
 <script setup>
 const { login, isLoading } = useAuth()
 const email = ref('')
+const phone = ref('')
 const error = ref('')
+const phoneError = ref('')
 
 // Redirect if already logged in
 const { user } = useAuth()
@@ -89,16 +110,50 @@ onMounted(async () => {
   }
 })
 
+// Phone validation function
+const validatePhone = () => {
+  phoneError.value = ''
+  
+  if (!phone.value) {
+    phoneError.value = ''
+    return
+  }
+  
+  // Remove all non-digits
+  const cleanPhone = phone.value.replace(/\D/g, '')
+  
+  if (cleanPhone.length < 10) {
+    phoneError.value = 'El número debe tener al menos 10 dígitos'
+  } else if (cleanPhone.length > 15) {
+    phoneError.value = 'El número no puede tener más de 15 dígitos'
+  } else {
+    phoneError.value = ''
+  }
+}
+
 const handleLogin = async () => {
   error.value = ''
+  phoneError.value = ''
   
   if (!email.value) {
     error.value = 'Por favor ingresa tu correo electrónico'
     return
   }
+  
+  if (!phone.value) {
+    error.value = 'Por favor ingresa tu número de celular'
+    return
+  }
+  
+  // Validate phone before sending
+  const cleanPhone = phone.value.replace(/\D/g, '')
+  if (cleanPhone.length < 10) {
+    phoneError.value = 'El número debe tener al menos 10 dígitos'
+    return
+  }
 
   try {
-    const result = await login(email.value)
+    const result = await login(email.value, phone.value)
     
     if (result.success) {
       console.log('Login successful, user role:', result.user.role)

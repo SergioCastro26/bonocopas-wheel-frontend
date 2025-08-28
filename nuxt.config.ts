@@ -15,6 +15,6 @@ export default defineNuxtConfig({
     transpile: ['vue3-roulette']
   },
   nitro: {
-    preset: 'vercel'
+    preset: 'node-server'
   }
 })

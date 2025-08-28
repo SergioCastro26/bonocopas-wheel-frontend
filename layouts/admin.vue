@@ -37,8 +37,8 @@
             <NuxtLink to="/wheel" class="text-sm text-gray-500 hover:text-gray-900 dark:text-gray-300 dark:hover:text-white">
               Ver Ruleta
             </NuxtLink>
-            <div class="flex items-center space-x-2">
-              <span class="text-sm text-gray-700 dark:text-gray-300">{{ user?.email }}</span>
+            <div v-if="user" class="flex items-center space-x-2">
+              <span class="text-sm text-gray-700 dark:text-gray-300">{{ user.email }}</span>
               <button @click="handleLogout" class="text-sm text-red-600 hover:text-red-800 dark:text-red-400 dark:hover:text-red-200">
                 Salir
               </button>
@@ -57,6 +57,14 @@
 
 <script setup>
 const { user, logout } = useAuth()
+
+// Ensure user is loaded on mount
+onMounted(async () => {
+  if (!user.value) {
+    const { checkAuth } = useAuth()
+    await checkAuth()
+  }
+})
 
 const handleLogout = async () => {
   await logout()

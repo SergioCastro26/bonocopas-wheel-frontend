@@ -28,7 +28,7 @@
             </h3>
             <div class="mt-2">
               <p class="text-sm text-gray-500 dark:text-gray-400">
-                Has ganado un premio increíble:
+                Has ganado:
               </p>
               <div class="mt-4 p-4 bg-gradient-to-r from-blue-50 to-purple-50 dark:from-blue-900/20 dark:to-purple-900/20 rounded-lg border border-blue-200 dark:border-blue-700">
                 <h4 class="text-xl font-bold text-gray-900 dark:text-white mb-2">
@@ -38,9 +38,30 @@
                   {{ prize.description }}
                 </p>
               </div>
+              
+              <!-- Prize claim instructions -->
+              <div class="mt-4 p-4 bg-orange-50 dark:bg-orange-900/20 rounded-lg border border-orange-200 dark:border-orange-700">
+                <div class="flex items-start">
+                  <div class="flex-shrink-0">
+                    <svg class="w-5 h-5 text-orange-500 mt-0.5" fill="currentColor" viewBox="0 0 20 20">
+                      <path fill-rule="evenodd" d="M8.257 3.099c.765-1.36 2.722-1.36 3.486 0l5.58 9.92c.75 1.334-.213 2.98-1.742 2.98H4.42c-1.53 0-2.493-1.646-1.743-2.98l5.58-9.92zM11 13a1 1 0 11-2 0 1 1 0 012 0zm-1-8a1 1 0 00-1 1v3a1 1 0 002 0V6a1 1 0 00-1-1z" clip-rule="evenodd" />
+                    </svg>
+                  </div>
+                  <div class="ml-3">
+                    <h5 class="text-sm font-semibold text-orange-800 dark:text-orange-200">
+                      ⏰ Instrucciones importantes
+                    </h5>
+                    <p class="text-sm text-orange-700 dark:text-orange-300 mt-1">
+                      Para reclamar tu premio debes ir a la opción <strong>'Ver Mis Premios'</strong>. 
+                      Tienes <strong>1 hora</strong> para reclamarlo ante el encargado de barra.
+                    </p>
+                  </div>
+                </div>
+              </div>
+              
               <div class="mt-4 text-xs text-gray-500 dark:text-gray-400">
                 <p>Fecha: {{ formatDate(spin?.date) }}</p>
-                <p>ID del giro: {{ spin?.id }}</p>
+                <p>Expira: {{ formatDate(spin?.expiresAt) }}</p>
               </div>
             </div>
           </div>
@@ -48,18 +69,10 @@
         <div class="mt-5 sm:mt-4 sm:flex sm:flex-row-reverse">
           <button
             type="button"
-            class="w-full inline-flex justify-center rounded-md border border-transparent shadow-sm px-4 py-2 bg-blue-600 text-base font-medium text-white hover:bg-blue-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-blue-500 sm:ml-3 sm:w-auto sm:text-sm transition-colors duration-200"
-            @click="claimPrize"
-            :disabled="isClaimingPrize"
+            class="w-full inline-flex justify-center rounded-md border border-transparent shadow-sm px-4 py-2 bg-green-600 text-base font-medium text-white hover:bg-green-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-green-500 sm:ml-3 sm:w-auto sm:text-sm transition-colors duration-200"
+            @click="goToPrizes"
           >
-            <span v-if="!isClaimingPrize">🎁 Reclamar Premio</span>
-            <span v-else class="flex items-center">
-              <svg class="animate-spin -ml-1 mr-2 h-4 w-4 text-white" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24">
-                <circle class="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" stroke-width="4"></circle>
-                <path class="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z"></path>
-              </svg>
-              Reclamando...
-            </span>
+            🏆 Ver Mis Premios
           </button>
           <button
             type="button"
@@ -109,28 +122,9 @@ const closeModal = () => {
   emit('close')
 }
 
-const claimPrize = async () => {
-  if (!props.spin?.id) return
-  
-  try {
-    isClaimingPrize.value = true
-    
-    await $api.put(`/spin/${props.spin.id}/claim`, {}, {
-      withCredentials: true
-    })
-    
-    emit('prize-claimed', props.spin)
-    closeModal()
-    
-    // Show success message
-    // You could add a toast notification here
-    
-  } catch (error) {
-    console.error('Error claiming prize:', error)
-    alert(error.response?.data?.message || 'Error al reclamar el premio')
-  } finally {
-    isClaimingPrize.value = false
-  }
+const goToPrizes = () => {
+  closeModal()
+  navigateTo('/history')
 }
 
 // Close modal on escape key
