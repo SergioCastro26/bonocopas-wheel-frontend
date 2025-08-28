@@ -8,7 +8,7 @@ module.exports = {
       script: './.output/server/index.mjs',
       env: {
         NODE_ENV: 'production',
-        API_BASE_URL: 'https://your-backend-url.onrender.com'
+        API_BASE_URL: 'https://bonocopas-wheel-backend.onrender.com'
       }
     }
   ]

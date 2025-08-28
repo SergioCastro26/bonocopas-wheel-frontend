@@ -9,8 +9,8 @@ echo "🚀 Starting deployment process..."
 
 # Configuration
 APP_NAME="bonocopas-wheel-frontend"
-APP_DIR="/home/admin/web/yourdomain.com/public_html"
-REPO_URL="https://github.com/yourusername/bonocopas-wheel.git"
+APP_DIR="/home/admin/web/srv981267.hstgr.cloud/public_html"
+REPO_URL="https://github.com/SergioCastro26/bonocopas-wheel-frontend"
 NODE_VERSION="18"
 
 # Colors for output
@@ -79,7 +79,7 @@ npm run build
 # Set environment variables
 echo -e "${YELLOW}🔧 Setting up environment variables...${NC}"
 export NODE_ENV=production
-export API_BASE_URL="https://your-backend-url.onrender.com"
+export API_BASE_URL="https://bonocopas-wheel-backend.onrender.com"
 
 # Stop existing PM2 process if running
 echo -e "${YELLOW}🛑 Stopping existing processes...${NC}"
@@ -97,13 +97,13 @@ sudo env PATH=$PATH:/usr/bin pm2 startup systemd -u admin --hp /home/admin
 
 # Configure Nginx (HestiaCP integration)
 echo -e "${YELLOW}🌐 Configuring Nginx...${NC}"
-NGINX_CONF="/home/admin/conf/web/yourdomain.com.nginx.conf"
+NGINX_CONF="/home/admin/conf/web/srv981267.hstgr.cloud.nginx.conf"
 
 # Create Nginx configuration for reverse proxy
 sudo tee $NGINX_CONF > /dev/null <<EOF
 server {
     listen 80;
-    server_name yourdomain.com www.yourdomain.com;
+    server_name srv981267.hstgr.cloud www.srv981267.hstgr.cloud;
     
     location / {
         proxy_pass http://localhost:3000;
@@ -127,10 +127,10 @@ sudo systemctl reload nginx
 
 # Setup SSL with Let's Encrypt (optional)
 echo -e "${YELLOW}🔒 Setting up SSL certificate...${NC}"
-sudo certbot --nginx -d yourdomain.com -d www.yourdomain.com --non-interactive --agree-tos --email your-email@example.com
+sudo certbot --nginx -d srv981267.hstgr.cloud -d www.srv981267.hstgr.cloud --non-interactive --agree-tos --email sergiolcb2001@gmail.com
 
 echo -e "${GREEN}✅ Deployment completed successfully!${NC}"
-echo -e "${GREEN}🌐 Your application should be available at: https://yourdomain.com${NC}"
+echo -e "${GREEN}🌐 Your application should be available at: https://srv981267.hstgr.cloud${NC}"
 echo ""
 echo -e "${YELLOW}📋 Next steps:${NC}"
 echo -e "1. Update the domain name in this script"
