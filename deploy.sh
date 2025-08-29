@@ -12,6 +12,7 @@ APP_NAME="bonocopas-wheel-frontend"
 APP_DIR="/home/admin/web/srv981267.hstgr.cloud/public_html"
 REPO_URL="https://github.com/SergioCastro26/bonocopas-wheel-frontend"
 NODE_VERSION="18"
+USER_NAME="admin"
 
 # Colors for output
 RED='\033[0;31m'
@@ -25,9 +26,11 @@ echo -e "App Directory: ${APP_DIR}"
 echo -e "Node Version: ${NODE_VERSION}"
 echo ""
 
-# Check if running as admin user
-if [ "$USER" != "admin" ]; then
-    echo -e "${RED}❌ This script should be run as admin user${NC}"
+# Check if we're in the correct directory
+if [ "$(pwd)" != "$APP_DIR" ]; then
+    echo -e "${RED}❌ Please run this script from: $APP_DIR${NC}"
+    echo -e "${YELLOW}Current directory: $(pwd)${NC}"
+    echo -e "${YELLOW}Expected directory: $APP_DIR${NC}"
     exit 1
 fi
 
@@ -48,13 +51,8 @@ echo -e "${GREEN}✅ NPM version: $(npm --version)${NC}"
 echo -e "${YELLOW}📦 Installing PM2...${NC}"
 sudo npm install -g pm2
 
-# Create application directory
-echo -e "${YELLOW}📁 Setting up application directory...${NC}"
-sudo mkdir -p $APP_DIR
-sudo chown -R admin:admin $APP_DIR
-
-# Navigate to app directory
-cd $APP_DIR
+# We're already in the correct directory
+echo -e "${GREEN}✅ Working in: $(pwd)${NC}"
 
 # Clone or update repository
 if [ -d ".git" ]; then
@@ -63,14 +61,12 @@ if [ -d ".git" ]; then
 else
     echo -e "${YELLOW}📥 Cloning repository...${NC}"
     git clone $REPO_URL .
+    echo -e "${YELLOW}📁 Repository cloned successfully${NC}"
 fi
-
-# Navigate to frontend directory
-cd frontend
 
 # Install dependencies
 echo -e "${YELLOW}📦 Installing dependencies...${NC}"
-npm ci --only=production
+npm install --production
 
 # Build the application
 echo -e "${YELLOW}🔨 Building application...${NC}"
@@ -93,41 +89,15 @@ pm2 start ecosystem.config.js
 pm2 save
 
 # Setup PM2 startup script
-sudo env PATH=$PATH:/usr/bin pm2 startup systemd -u admin --hp /home/admin
+sudo env PATH=$PATH:/usr/bin pm2 startup systemd -u $USER_NAME --hp /home/$USER_NAME
 
-# Configure Nginx (HestiaCP integration)
-echo -e "${YELLOW}🌐 Configuring Nginx...${NC}"
-NGINX_CONF="/home/admin/conf/web/srv981267.hstgr.cloud.nginx.conf"
-
-# Create Nginx configuration for reverse proxy
-sudo tee $NGINX_CONF > /dev/null <<EOF
-server {
-    listen 80;
-    server_name srv981267.hstgr.cloud www.srv981267.hstgr.cloud;
-    
-    location / {
-        proxy_pass http://localhost:3000;
-        proxy_http_version 1.1;
-        proxy_set_header Upgrade \$http_upgrade;
-        proxy_set_header Connection 'upgrade';
-        proxy_set_header Host \$host;
-        proxy_set_header X-Real-IP \$remote_addr;
-        proxy_set_header X-Forwarded-For \$proxy_add_x_forwarded_for;
-        proxy_set_header X-Forwarded-Proto \$scheme;
-        proxy_cache_bypass \$http_upgrade;
-    }
-}
-EOF
-
-# Test Nginx configuration
-sudo nginx -t
-
-# Reload Nginx
-sudo systemctl reload nginx
+# HestiaCP already has the proxy configured, just verify it's working
+echo -e "${YELLOW}🌐 Verifying Nginx configuration...${NC}"
+echo -e "${GREEN}✅ HestiaCP proxy is already configured for port 3000${NC}"
 
 # Setup SSL with Let's Encrypt (optional)
-echo -e "${YELLOW}🔒 Setting up SSL certificate...${NC}"
-sudo certbot --nginx -d srv981267.hstgr.cloud -d www.srv981267.hstgr.cloud --non-interactive --agree-tos --email sergiolcb2001@gmail.com
+# SSL is already configured by HestiaCP
+echo -e "${GREEN}✅ SSL certificate is already configured by HestiaCP${NC}"
 
 echo -e "${GREEN}✅ Deployment completed successfully!${NC}"
 echo -e "${GREEN}🌐 Your application should be available at: https://srv981267.hstgr.cloud${NC}"

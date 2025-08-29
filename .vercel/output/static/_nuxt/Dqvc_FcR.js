@@ -1,1 +1,0 @@
-import{K as i,L as r,k as o,M as u}from"./DF66RuPJ.js";import{u as n}from"./CYNNm3xl.js";const A=i(async(c,d)=>{let e,t;const{user:s,checkAuth:a}=n();if(!s.value&&!([e,t]=r(()=>a()),e=await e,t(),e))return o("/login");if(s.value?.role!=="admin")throw u({statusCode:403,statusMessage:"Access denied. Admin privileges required."})});export{A as default};
