@@ -15,14 +15,17 @@
     "@nuxtjs/tailwindcss": "^6.8.4"
   },
   "dependencies": {
+    "nuxt": "3.13.2",
     "@headlessui/vue": "^1.7.16",
     "@heroicons/vue": "^2.0.18",
     "@nuxt/ui": "^2.11.1",
     "@nuxtjs/color-mode": "^3.3.2",
-    "@nuxtjs/vercel-builder": "^0.25.0",
     "@vueuse/nuxt": "^10.5.0",
     "axios": "^1.6.2",
     "qr-code-styling": "^1.6.0-rc.1",
     "vue3-roulette": "^0.3.3"
+  },
+  "engines": {
+    "node": ">=20.19.0"
   }
 }
