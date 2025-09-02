@@ -146,8 +146,8 @@ const generateQR = async () => {
       
       // Create QR code with warm orange Barceló colors
       const qrCode = new QRCodeStyling({
-        width: 250,
-        height: 250,
+        width: 300,
+        height: 300,
         type: "svg", // Changed to SVG for better visibility
         data: qrUrl.value,
         image: "https://res.cloudinary.com/dphpfdsk3/image/upload/v1756323180/ZonaBarcelo_LogoNaranja_diwkgq.png",
@@ -184,7 +184,7 @@ const generateQR = async () => {
         },
         imageOptions: {
           crossOrigin: "anonymous",
-          margin: 8,
+          margin: 0,
           imageSize: 0.3,
           hideBackgroundDots: true
         },
