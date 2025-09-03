@@ -4,6 +4,7 @@ export const useAuth = () => {
   const isLoggedIn = computed(() => !!user.value)
   const isAdmin = computed(() => user.value?.role === 'admin')
   const isLoading = ref(false)
+  const authToken = ref(null) // Store token for Safari browsers
 
   // Login function with retry mechanism for mobile networks
   const login = async (email: string, phone: string, retryCount = 0) => {
@@ -16,6 +17,13 @@ export const useAuth = () => {
         timeout: 30000 // Extended timeout for mobile networks
       })
       user.value = response.data.user
+      
+      // Store token for Safari browsers that can't use cookies
+      if (response.data.token) {
+        authToken.value = response.data.token
+        localStorage.setItem('authToken', response.data.token)
+      }
+      
       return { success: true, user: response.data.user }
     } catch (error: any) {
       console.error('Login error:', error)
@@ -51,10 +59,14 @@ export const useAuth = () => {
         withCredentials: true
       })
       user.value = null
+      authToken.value = null
+      localStorage.removeItem('authToken')
       await navigateTo('/login')
     } catch (error) {
       console.error('Logout error:', error)
       user.value = null
+      authToken.value = null
+      localStorage.removeItem('authToken')
       await navigateTo('/login')
     }
   }
