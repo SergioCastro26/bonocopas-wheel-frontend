@@ -5,23 +5,42 @@ export const useAuth = () => {
   const isAdmin = computed(() => user.value?.role === 'admin')
   const isLoading = ref(false)
 
-  // Login function
-  const login = async (email: string, phone: string) => {
+  // Login function with retry mechanism for mobile networks
+  const login = async (email: string, phone: string, retryCount = 0) => {
+    const maxRetries = 2
+    
     try {
       isLoading.value = true
       const response = await $api.post('/auth/login', { email, phone }, {
-        withCredentials: true
+        withCredentials: true,
+        timeout: 30000 // Extended timeout for mobile networks
       })
       user.value = response.data.user
       return { success: true, user: response.data.user }
     } catch (error: any) {
       console.error('Login error:', error)
+      
+      // Handle timeout with retry
+      if (error.code === 'ECONNABORTED' && retryCount < maxRetries) {
+        console.log(`Login timeout, retrying... (${retryCount + 1}/${maxRetries})`)
+        return login(email, phone, retryCount + 1)
+      }
+      
+      if (error.code === 'ECONNABORTED') {
+        return { 
+          success: false, 
+          error: 'Connection timeout after multiple attempts. Please check your internet connection.' 
+        }
+      }
+      
       return { 
         success: false, 
         error: error.response?.data?.message || 'Login failed' 
       }
     } finally {
-      isLoading.value = false
+      if (retryCount === 0) { // Only set loading false on final attempt
+        isLoading.value = false
+      }
     }
   }
 

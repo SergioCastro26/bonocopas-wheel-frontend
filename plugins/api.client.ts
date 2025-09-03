@@ -5,7 +5,7 @@ export default defineNuxtPlugin(() => {
   
   const api = axios.create({
     baseURL: config.public.apiBase,
-    timeout: 10000,
+    timeout: 30000, // Increased timeout for mobile networks
     headers: {
       'Content-Type': 'application/json',
     },
