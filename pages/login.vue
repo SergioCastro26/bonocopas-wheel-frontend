@@ -42,7 +42,7 @@
               autocomplete="tel"
               required
               class="appearance-none rounded-md relative block w-full px-3 py-2 border border-gray-300 dark:border-gray-600 placeholder-gray-500 dark:placeholder-gray-400 text-gray-900 dark:text-white bg-white dark:bg-gray-800 focus:outline-none focus:ring-blue-500 focus:border-blue-500 focus:z-10 sm:text-sm"
-              placeholder="Número de celular (ej: 3001234567)"
+              placeholder="Número de celular (ej: 611 57 78 98)"
               :disabled="isLoading"
               @input="validatePhone"
             />
@@ -122,8 +122,8 @@ const validatePhone = () => {
   // Remove all non-digits
   const cleanPhone = phone.value.replace(/\D/g, '')
   
-  if (cleanPhone.length < 10) {
-    phoneError.value = 'El número debe tener al menos 10 dígitos'
+  if (cleanPhone.length < 9) {
+    phoneError.value = 'El número debe tener al menos 9 dígitos'
   } else if (cleanPhone.length > 15) {
     phoneError.value = 'El número no puede tener más de 15 dígitos'
   } else {
@@ -147,8 +147,8 @@ const handleLogin = async () => {
   
   // Validate phone before sending
   const cleanPhone = phone.value.replace(/\D/g, '')
-  if (cleanPhone.length < 10) {
-    phoneError.value = 'El número debe tener al menos 10 dígitos'
+  if (cleanPhone.length < 9) {
+    phoneError.value = 'El número debe tener al menos 9 dígitos'
     return
   }
 
