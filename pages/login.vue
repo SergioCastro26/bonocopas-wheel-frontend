@@ -11,7 +11,7 @@
           Accede a la Ruleta de la Fiesta de Zona Barceló
         </h2>
         <p class="mt-2 text-center text-sm text-gray-600 dark:text-gray-400">
-          Ingresa tu correo electrónico y número de celular para comenzar a girar la ruleta
+          Ingresa tu correo electrónico y número de teléfono para comenzar a girar la ruleta
         </p>
       </div>
       
@@ -33,7 +33,7 @@
           </div>
           
           <div>
-            <label for="phone" class="sr-only">Número de celular</label>
+            <label for="phone" class="sr-only">Número de teléfono</label>
             <input
               id="phone"
               v-model="phone"
@@ -42,7 +42,7 @@
               autocomplete="tel"
               required
               class="appearance-none rounded-md relative block w-full px-3 py-2 border border-gray-300 dark:border-gray-600 placeholder-gray-500 dark:placeholder-gray-400 text-gray-900 dark:text-white bg-white dark:bg-gray-800 focus:outline-none focus:ring-blue-500 focus:border-blue-500 focus:z-10 sm:text-sm"
-              placeholder="Número de celular (ej: 611 57 78 98)"
+              placeholder="Número de teléfono (ej: 611 57 78 98)"
               :disabled="isLoading"
               @input="validatePhone"
             />
@@ -141,7 +141,7 @@ const handleLogin = async () => {
   }
   
   if (!phone.value) {
-    error.value = 'Por favor ingresa tu número de celular'
+    error.value = 'Por favor ingresa tu número de teléfono'
     return
   }
   
