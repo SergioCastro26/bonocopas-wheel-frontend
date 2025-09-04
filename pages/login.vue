@@ -1,21 +1,26 @@
 <template>
-  <div class="min-h-screen flex items-center justify-center bg-gray-50 dark:bg-gray-900 py-12 px-4 sm:px-6 lg:px-8">
-    <div class="max-w-md w-full space-y-8">
+  <div class="min-h-screen bg-cover bg-center bg-no-repeat bg-fixed relative flex items-center justify-center py-12 px-4 sm:px-6 lg:px-8" 
+       style="background-image: url('https://res.cloudinary.com/dphpfdsk3/image/upload/v1756999779/paisaje-de-playa-de-hawai_xxzdov.jpg');">
+    <!-- Dark overlay for better text readability -->
+    <div class="absolute inset-0 bg-black/40"></div>
+    <div class="relative z-10 max-w-md w-full space-y-8">
       <div>
-        <div class="mx-auto h-12 w-12 bg-gradient-to-r from-blue-500 to-purple-600 rounded-full flex items-center justify-center">
-          <svg class="w-8 h-8 text-white" fill="currentColor" viewBox="0 0 20 20">
-            <path fill-rule="evenodd" d="M10 18a8 8 0 100-16 8 8 0 000 16zm3.707-8.293l-3-3a1 1 0 00-1.414 0l-3 3a1 1 0 001.414 1.414L9 9.414V13a1 1 0 102 0V9.414l1.293 1.293a1 1 0 001.414-1.414z" clip-rule="evenodd" />
-          </svg>
+        <div class="mx-auto h-16 w-64 rounded-lg flex items-center justify-center">
+          <img 
+            src="https://res.cloudinary.com/dphpfdsk3/image/upload/v1756323180/ZonaBarcelo_LogoNaranja_diwkgq.png" 
+            alt="Zona Barceló" 
+            class="h-full w-full object-contain"
+          />
         </div>
-        <h2 class="mt-6 text-center text-3xl font-extrabold text-gray-900 dark:text-white">
+        <h2 class="mt-6 text-center text-3xl font-extrabold text-white drop-shadow-2xl shadow-black/50 tracking-wide">
           Accede a la Ruleta de la Fiesta de Zona Barceló
         </h2>
-        <p class="mt-2 text-center text-sm text-gray-600 dark:text-gray-400">
+        <p class="mt-2 text-center text-sm text-white drop-shadow-lg shadow-black/60 font-medium">
           Ingresa tu correo electrónico y número de teléfono para comenzar a girar la ruleta
         </p>
       </div>
       
-      <form class="mt-8 space-y-6" @submit.prevent="handleLogin">
+      <form class="mt-8 space-y-6 bg-white/70 backdrop-blur-md rounded-xl p-6 shadow-2xl border border-white/30" @submit.prevent="handleLogin">
         <div class="space-y-4">
           <div>
             <label for="email" class="sr-only">Correo electrónico</label>
@@ -26,7 +31,7 @@
               type="email"
               autocomplete="email"
               required
-              class="appearance-none rounded-md relative block w-full px-3 py-2 border border-gray-300 dark:border-gray-600 placeholder-gray-500 dark:placeholder-gray-400 text-gray-900 dark:text-white bg-white dark:bg-gray-800 focus:outline-none focus:ring-blue-500 focus:border-blue-500 focus:z-10 sm:text-sm"
+              class="appearance-none rounded-md relative block w-full px-3 py-2 border border-orange-300 placeholder-gray-500 text-gray-900 bg-white focus:outline-none focus:ring-orange-500 focus:border-orange-500 focus:z-10 sm:text-sm"
               placeholder="Correo electrónico"
               :disabled="isLoading"
             />
@@ -41,16 +46,16 @@
               type="tel"
               autocomplete="tel"
               required
-              class="appearance-none rounded-md relative block w-full px-3 py-2 border border-gray-300 dark:border-gray-600 placeholder-gray-500 dark:placeholder-gray-400 text-gray-900 dark:text-white bg-white dark:bg-gray-800 focus:outline-none focus:ring-blue-500 focus:border-blue-500 focus:z-10 sm:text-sm"
+              class="appearance-none rounded-md relative block w-full px-3 py-2 border border-orange-300 placeholder-gray-500 text-gray-900 bg-white focus:outline-none focus:ring-orange-500 focus:border-orange-500 focus:z-10 sm:text-sm"
               placeholder="Número de teléfono (ej: 611 57 78 98)"
               :disabled="isLoading"
               @input="validatePhone"
             />
-            <p v-if="phoneError" class="mt-1 text-sm text-red-600 dark:text-red-400">{{ phoneError }}</p>
+            <p v-if="phoneError" class="mt-1 text-sm text-red-600">{{ phoneError }}</p>
           </div>
         </div>
 
-        <div v-if="error" class="bg-red-50 dark:bg-red-900/20 border border-red-200 dark:border-red-800 rounded-md p-4">
+        <div v-if="error" class="bg-red-50 border border-red-200 rounded-md p-4">
           <div class="flex">
             <div class="flex-shrink-0">
               <svg class="h-5 w-5 text-red-400" viewBox="0 0 20 20" fill="currentColor">
@@ -58,7 +63,7 @@
               </svg>
             </div>
             <div class="ml-3">
-              <p class="text-sm text-red-700 dark:text-red-400">{{ error }}</p>
+              <p class="text-sm text-red-700">{{ error }}</p>
             </div>
           </div>
         </div>
@@ -67,7 +72,7 @@
           <button
             type="submit"
             :disabled="isLoading || !email || !phone || !!phoneError"
-            class="group relative w-full flex justify-center py-2 px-4 border border-transparent text-sm font-medium rounded-md text-white bg-blue-600 hover:bg-blue-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-blue-500 disabled:opacity-50 disabled:cursor-not-allowed transition-colors duration-200"
+            class="group relative w-full flex justify-center py-2 px-4 border border-transparent text-sm font-medium rounded-md text-white bg-gradient-to-r from-cyan-500 to-orange-500 hover:from-cyan-600 hover:to-orange-600 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-orange-500 disabled:opacity-50 disabled:cursor-not-allowed transition-all duration-200"
           >
             <span v-if="!isLoading">Ingresar</span>
             <span v-else class="flex items-center">
@@ -81,8 +86,8 @@
         </div>
       </form>
 
-      <div class="text-center">
-        <p class="text-xs text-gray-500 dark:text-gray-400">
+      <div class="text-center bg-white/90 backdrop-blur-sm rounded-lg p-4 shadow-lg">
+        <p class="text-xs text-gray-600">
           Al ingresar, aceptas nuestros términos y condiciones
         </p>
       </div>

@@ -220,7 +220,7 @@ const downloadQR = async () => {
 
     // Use the QR-Code-Styling download method
     canvas._qrCode.download({
-      name: `bonocopas-qr-${new Date().getTime()}`,
+      name: `zona-barcelo-qr-${new Date().getTime()}`,
       extension: "png"
     })
     

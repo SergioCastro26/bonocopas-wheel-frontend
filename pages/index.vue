@@ -24,10 +24,12 @@
     <!-- Features Section -->
     <div class="grid grid-cols-1 md:grid-cols-3 gap-8 mb-16">
       <div class="text-center p-6 bg-white dark:bg-gray-800 rounded-xl shadow-sm">
-        <div class="w-16 h-16 bg-blue-100 dark:bg-blue-900 rounded-full flex items-center justify-center mx-auto mb-4">
-          <svg class="w-8 h-8 text-blue-600 dark:text-blue-400" fill="currentColor" viewBox="0 0 20 20">
-            <path fill-rule="evenodd" d="M10 18a8 8 0 100-16 8 8 0 000 16zm3.707-8.293l-3-3a1 1 0 00-1.414 0l-3 3a1 1 0 001.414 1.414L9 9.414V13a1 1 0 102 0V9.414l1.293 1.293a1 1 0 001.414-1.414z" clip-rule="evenodd" />
-          </svg>
+        <div class="w-16 h-8 bg-white rounded-lg flex items-center justify-center mx-auto mb-4 p-1">
+          <img 
+            src="https://res.cloudinary.com/dphpfdsk3/image/upload/v1756323180/ZonaBarcelo_LogoNaranja_diwkgq.png" 
+            alt="Zona Barceló" 
+            class="h-full w-full object-contain"
+          />
         </div>
         <h3 class="text-xl font-semibold text-gray-900 dark:text-white mb-2">Fácil de Usar</h3>
         <p class="text-gray-600 dark:text-gray-300">

@@ -1,6 +1,6 @@
 <template>
   <div class="min-h-screen bg-cover bg-center bg-no-repeat bg-fixed relative" 
-       style="background-image: url('https://res.cloudinary.com/dphpfdsk3/image/upload/v1756282194/Gemini_Generated_Image_nsg6cbnsg6cbnsg6_lk0f2e.png');">
+       style="background-image: url('https://res.cloudinary.com/dphpfdsk3/image/upload/v1756999777/paisaje-natural-impresionante_ge01xh.jpg');">
     <!-- Dark overlay for better text readability -->
     <div class="absolute inset-0 bg-black/40"></div>
     

@@ -1,16 +1,21 @@
 <template>
-  <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-12">
+  <div class="min-h-screen bg-cover bg-center bg-no-repeat bg-fixed relative" 
+       style="background-image: url('https://res.cloudinary.com/dphpfdsk3/image/upload/v1756999777/paisaje-natural-impresionante_ge01xh.jpg');">
+    <!-- Dark overlay for better text readability -->
+    <div class="absolute inset-0 bg-black/40"></div>
+    
+    <div class="relative z-10 max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-12">
     <!-- Header -->
     <div class="text-center mb-12">
-      <h1 class="text-4xl md:text-5xl font-bold text-gray-900 dark:text-white mb-4">
+      <h1 class="text-4xl md:text-5xl font-bold text-white drop-shadow-2xl shadow-black/50 tracking-wide mb-4">
         🏆 Mis Premios
       </h1>
-      <p class="text-xl text-gray-600 dark:text-gray-300 mb-8">
+      <p class="text-xl text-white drop-shadow-lg shadow-black/60 font-medium mb-8">
         Aquí puedes ver todos tus premios ganados y su estado
       </p>
       
       <!-- User Info -->
-      <div v-if="user" class="inline-flex items-center px-4 py-2 bg-blue-100 dark:bg-blue-900 text-blue-800 dark:text-blue-200 rounded-full mb-8">
+      <div v-if="user" class="inline-flex items-center px-4 py-2 bg-white/80 backdrop-blur-sm text-blue-800 rounded-full mb-8 shadow-lg border border-white/30">
         <svg class="w-5 h-5 mr-2" fill="currentColor" viewBox="0 0 20 20">
           <path fill-rule="evenodd" d="M10 9a3 3 0 100-6 3 3 0 000 6zm-7 9a7 7 0 1114 0H3z" clip-rule="evenodd" />
         </svg>
@@ -22,7 +27,7 @@
     </div>
 
     <!-- Warning Message -->
-    <div class="mb-8 p-4 bg-red-50 dark:bg-red-900/20 rounded-lg border border-red-200 dark:border-red-700">
+    <div class="mb-8 p-4 bg-red-50/90 backdrop-blur-sm rounded-lg border border-red-200/50 shadow-lg">
       <div class="flex items-start">
         <div class="flex-shrink-0">
           <svg class="w-6 h-6 text-red-500" fill="currentColor" viewBox="0 0 20 20">
@@ -30,10 +35,10 @@
           </svg>
         </div>
         <div class="ml-3">
-          <h3 class="text-lg font-semibold text-red-800 dark:text-red-200">
+          <h3 class="text-lg font-semibold text-red-800">
             ⚠️ IMPORTANTE - LEE ANTES DE CONTINUAR
           </h3>
-          <p class="text-sm text-red-700 dark:text-red-300 mt-2">
+          <p class="text-sm text-red-700 mt-2">
             Para poder reclamar tu premio <strong>NO oprimas el botón 'Autorización Camarero'</strong>. 
             Este debe ser usado únicamente por el encargado de barra. 
             Si lo haces tú, el premio se eliminará y no podrás reclamarlo.
@@ -44,19 +49,19 @@
 
     <!-- Loading State -->
     <div v-if="isLoading" class="text-center py-12">
-      <div class="inline-block animate-spin rounded-full h-8 w-8 border-b-2 border-blue-600"></div>
-      <p class="mt-4 text-gray-600 dark:text-gray-400">Cargando premios...</p>
+      <div class="inline-block animate-spin rounded-full h-8 w-8 border-b-2 border-white"></div>
+      <p class="mt-4 text-white drop-shadow-lg">Cargando premios...</p>
     </div>
 
     <!-- Empty State -->
     <div v-else-if="spins.length === 0" class="text-center py-12">
-      <div class="mx-auto h-24 w-24 bg-gray-100 dark:bg-gray-700 rounded-full flex items-center justify-center mb-4">
-        <svg class="h-12 w-12 text-gray-400" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+      <div class="mx-auto h-24 w-24 bg-white/80 backdrop-blur-sm rounded-full flex items-center justify-center mb-4 shadow-lg">
+        <svg class="h-12 w-12 text-gray-600" fill="none" viewBox="0 0 24 24" stroke="currentColor">
           <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 8v4l3 3m6-3a9 9 0 11-18 0 9 9 0 0118 0z" />
         </svg>
       </div>
-      <h3 class="text-lg font-medium text-gray-900 dark:text-white mb-2">No tienes premios aún</h3>
-      <p class="text-gray-600 dark:text-gray-400 mb-6">¡Ve a la ruleta y gana tu primer premio!</p>
+      <h3 class="text-lg font-medium text-white drop-shadow-lg mb-2">No tienes premios aún</h3>
+      <p class="text-white/90 drop-shadow-lg mb-6">¡Ve a la ruleta y gana tu primer premio!</p>
       <NuxtLink
         to="/wheel"
         class="inline-flex items-center px-4 py-2 border border-transparent text-sm font-medium rounded-md text-white bg-blue-600 hover:bg-blue-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-blue-500 transition-colors duration-200"
@@ -69,14 +74,14 @@
     <div v-else>
       <!-- Active Prizes -->
       <div v-if="activePrizes.length > 0" class="mb-12">
-        <h2 class="text-2xl font-bold text-gray-900 dark:text-white mb-6">
+        <h2 class="text-2xl font-bold text-white drop-shadow-lg mb-6">
           🎯 Premios Activos ({{ activePrizes.length }})
         </h2>
         <div class="grid gap-6 md:grid-cols-2 lg:grid-cols-3">
           <div
             v-for="spin in activePrizes"
             :key="spin.id"
-            class="bg-white dark:bg-gray-800 rounded-lg shadow-md border border-gray-200 dark:border-gray-700 p-6"
+            class="bg-white/90 backdrop-blur-sm rounded-lg shadow-lg border border-white/30 p-6"
           >
             <div class="flex items-start justify-between mb-4">
               <div class="flex-1">
@@ -129,37 +134,37 @@
 
       <!-- Expired Prizes -->
       <div v-if="expiredPrizes.length > 0" class="mb-12">
-        <h2 class="text-2xl font-bold text-gray-900 dark:text-white mb-6">
+        <h2 class="text-2xl font-bold text-white drop-shadow-lg mb-6">
           ⏰ Premios Expirados ({{ expiredPrizes.length }})
         </h2>
         <div class="grid gap-6 md:grid-cols-2 lg:grid-cols-3">
           <div
             v-for="spin in expiredPrizes"
             :key="spin.id"
-            class="bg-white dark:bg-gray-800 rounded-lg shadow-md border border-gray-200 dark:border-gray-700 p-6 opacity-75"
+            class="bg-white/95 backdrop-blur-sm rounded-lg shadow-lg border border-white/30 p-6"
           >
             <div class="flex items-start justify-between mb-4">
               <div class="flex-1">
-                <h3 class="text-lg font-semibold text-gray-900 dark:text-white">
+                <h3 class="text-lg font-semibold text-gray-900">
                   {{ spin.prize.name }}
                 </h3>
-                <p v-if="spin.prize.description" class="text-sm text-gray-600 dark:text-gray-400 mt-1">
+                <p v-if="spin.prize.description" class="text-sm text-gray-700 mt-1">
                   {{ spin.prize.description }}
                 </p>
               </div>
-              <span class="inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium bg-red-100 text-red-800 dark:bg-red-900 dark:text-red-200">
+              <span class="inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium bg-red-100 text-red-800">
                 Expirado
               </span>
             </div>
 
-            <div class="text-xs text-gray-500 dark:text-gray-400 mb-4">
+            <div class="text-xs text-gray-600 mb-4">
               <p>Ganado: {{ formatDate(spin.date) }}</p>
               <p>Expiró: {{ formatDate(spin.expiresAt) }}</p>
             </div>
 
             <button
               disabled
-              class="w-full inline-flex justify-center items-center px-4 py-2 border border-gray-300 dark:border-gray-600 text-sm font-medium rounded-md text-gray-500 dark:text-gray-400 bg-gray-100 dark:bg-gray-700 cursor-not-allowed"
+              class="w-full inline-flex justify-center items-center px-4 py-2 border border-gray-300 text-sm font-medium rounded-md text-gray-600 bg-gray-100 cursor-not-allowed"
             >
               ❌ Premio Expirado
             </button>
@@ -169,37 +174,37 @@
 
       <!-- Claimed Prizes -->
       <div v-if="claimedPrizes.length > 0" class="mb-12">
-        <h2 class="text-2xl font-bold text-gray-900 dark:text-white mb-6">
+        <h2 class="text-2xl font-bold text-white drop-shadow-lg mb-6">
           ✅ Premios Reclamados ({{ claimedPrizes.length }})
         </h2>
         <div class="grid gap-6 md:grid-cols-2 lg:grid-cols-3">
           <div
             v-for="spin in claimedPrizes"
             :key="spin.id"
-            class="bg-white dark:bg-gray-800 rounded-lg shadow-md border border-gray-200 dark:border-gray-700 p-6"
+            class="bg-white/95 backdrop-blur-sm rounded-lg shadow-lg border border-white/30 p-6"
           >
             <div class="flex items-start justify-between mb-4">
               <div class="flex-1">
-                <h3 class="text-lg font-semibold text-gray-900 dark:text-white">
+                <h3 class="text-lg font-semibold text-gray-900">
                   {{ spin.prize.name }}
                 </h3>
-                <p v-if="spin.prize.description" class="text-sm text-gray-600 dark:text-gray-400 mt-1">
+                <p v-if="spin.prize.description" class="text-sm text-gray-700 mt-1">
                   {{ spin.prize.description }}
                 </p>
               </div>
-              <span class="inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium bg-blue-100 text-blue-800 dark:bg-blue-900 dark:text-blue-200">
+              <span class="inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium bg-blue-100 text-blue-800">
                 Reclamado
               </span>
             </div>
 
-            <div class="text-xs text-gray-500 dark:text-gray-400 mb-4">
+            <div class="text-xs text-gray-600 mb-4">
               <p>Ganado: {{ formatDate(spin.date) }}</p>
               <p>Reclamado: {{ formatDate(spin.expiresAt) }}</p>
             </div>
 
             <button
               disabled
-              class="w-full inline-flex justify-center items-center px-4 py-2 border border-green-300 dark:border-green-600 text-sm font-medium rounded-md text-green-700 dark:text-green-300 bg-green-50 dark:bg-green-900/20 cursor-not-allowed"
+              class="w-full inline-flex justify-center items-center px-4 py-2 border border-green-300 text-sm font-medium rounded-md text-green-700 bg-green-50 cursor-not-allowed"
             >
               ✅ Ya Reclamado
             </button>
@@ -212,7 +217,7 @@
     <div class="text-center mt-12">
       <NuxtLink
         to="/wheel"
-        class="inline-flex items-center px-6 py-3 border border-gray-300 dark:border-gray-600 shadow-sm text-base font-medium rounded-md text-gray-700 dark:text-gray-300 bg-white dark:bg-gray-800 hover:bg-gray-50 dark:hover:bg-gray-700 transition-colors duration-200"
+        class="inline-flex items-center px-6 py-3 border border-white/30 shadow-lg text-base font-medium rounded-md text-white bg-white/20 backdrop-blur-sm hover:bg-white/30 transition-colors duration-200"
       >
         <svg class="w-5 h-5 mr-2" fill="none" stroke="currentColor" viewBox="0 0 24 24">
           <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M10 19l-7-7m0 0l7-7m-7 7h18" />
@@ -248,6 +253,7 @@
           </div>
         </div>
       </div>
+    </div>
     </div>
   </div>
 </template>

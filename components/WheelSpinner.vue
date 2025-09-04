@@ -2,15 +2,10 @@
   <div class="flex flex-col items-center space-y-8">
     <!-- Vue3 Roulette Wheel -->
     <div class="relative wheel-container">
-      <!-- Glow effect wrapper -->
-      <div class="absolute inset-0 rounded-full bg-gradient-to-r from-purple-500 via-pink-500 to-purple-600 opacity-30 blur-xl scale-110 animate-pulse"></div>
+      <!-- Tropical glow effect wrapper -->
+      <div class="absolute inset-0 rounded-full bg-gradient-to-r from-cyan-400 via-orange-400 to-pink-400 opacity-40 blur-xl scale-110 animate-pulse"></div>
       
-      <!-- Custom centered arrow indicator -->
-      <div class="absolute top-2 left-1/2 transform -translate-x-1/2 z-50 pointer-events-none">
-        <div class="w-0 h-0 border-l-[15px] border-r-[15px] border-b-[25px] border-l-transparent border-r-transparent border-b-white filter drop-shadow-2xl"></div>
-      </div>
-      
-      <div class="relative z-10 rounded-full shadow-2xl" style="box-shadow: inset 0 0 50px rgba(157, 78, 221, 0.3), 0 0 30px rgba(157, 78, 221, 0.5);">
+      <div class="relative z-10 rounded-full shadow-2xl" style="box-shadow: inset 0 0 50px rgba(6, 182, 212, 0.3), 0 0 30px rgba(251, 146, 60, 0.5);">
         <component 
           v-if="Roulette"
           :is="Roulette" 
@@ -37,7 +32,7 @@
         >
           <template #baseContent>
             <div class="arrow-roulette flex items-center justify-center w-full h-full">
-              <div class="w-12 h-12 md:w-16 md:h-16 bg-gradient-to-r from-purple-600 to-pink-600 rounded-full flex items-center justify-center shadow-2xl border-4 border-white">
+              <div class="w-12 h-12 md:w-16 md:h-16 bg-gradient-to-r from-cyan-500 to-orange-500 rounded-full flex items-center justify-center shadow-2xl border-4 border-white">
                 <svg class="w-6 h-6 md:w-8 md:h-8 text-white" fill="currentColor" viewBox="0 0 24 24">
                   <path d="M12 2L13.09 8.26L22 9L13.09 9.74L12 16L10.91 9.74L2 9L10.91 8.26L12 2Z"/>
                 </svg>
@@ -56,8 +51,8 @@
     <button
       @click="spin"
       :disabled="isSpinning || !canSpin"
-      class="px-6 py-3 md:px-8 md:py-4 bg-gradient-to-r from-purple-600 via-pink-600 to-purple-700 hover:from-purple-700 hover:via-pink-700 hover:to-purple-800 text-white font-bold text-base md:text-lg rounded-full shadow-2xl transform transition-all duration-300 hover:scale-105 disabled:opacity-50 disabled:cursor-not-allowed disabled:transform-none border-2 border-white/20 backdrop-blur-sm min-w-[200px] touch-manipulation"
-      style="box-shadow: 0 0 20px rgba(157, 78, 221, 0.4), inset 0 1px 0 rgba(255, 255, 255, 0.2);"
+      class="px-6 py-3 md:px-8 md:py-4 bg-gradient-to-r from-cyan-500 via-orange-500 to-pink-500 hover:from-cyan-600 hover:via-orange-600 hover:to-pink-600 text-white font-bold text-base md:text-lg rounded-full shadow-2xl transform transition-all duration-300 hover:scale-105 disabled:opacity-50 disabled:cursor-not-allowed disabled:transform-none border-2 border-white/20 backdrop-blur-sm min-w-[200px] touch-manipulation"
+      style="box-shadow: 0 0 20px rgba(6, 182, 212, 0.4), inset 0 1px 0 rgba(255, 255, 255, 0.2);"
     >
       <span v-if="!isSpinning" class="flex items-center justify-center">
         <svg class="w-5 h-5 md:w-6 md:h-6 mr-2" fill="currentColor" viewBox="0 0 24 24">
@@ -93,7 +88,7 @@
       <div 
         :class="[
           'p-4 rounded-lg shadow-lg border-l-4 transform transition-all duration-300 backdrop-blur-sm',
-          notification.type === 'success' ? 'bg-purple-900/90 border-purple-400 text-white' : '',
+          notification.type === 'success' ? 'bg-cyan-900/90 border-cyan-400 text-white' : '',
           notification.type === 'error' ? 'bg-red-900/90 border-red-400 text-white' : '',
           notification.type === 'warning' ? 'bg-yellow-900/90 border-yellow-400 text-white' : '',
           notification.type === 'info' ? 'bg-blue-900/90 border-blue-400 text-white' : ''
@@ -101,7 +96,7 @@
       >
         <div class="flex items-start">
           <div class="flex-shrink-0">
-            <span v-if="notification.type === 'success'" class="text-purple-300 text-xl">🎉</span>
+            <span v-if="notification.type === 'success'" class="text-cyan-300 text-xl">🎉</span>
             <span v-else-if="notification.type === 'error'" class="text-red-300 text-xl">❌</span>
             <span v-else-if="notification.type === 'warning'" class="text-yellow-300 text-xl">⚠️</span>
             <span v-else-if="notification.type === 'info'" class="text-blue-300 text-xl">ℹ️</span>
@@ -195,16 +190,16 @@ const hideNotification = () => {
   notification.value.show = false
 }
 
-// Sample prizes with dark theme colors
+// Sample prizes with tropical theme colors
 const prizes = ref([
-  { id: 1, name: 'Premio 1', color: '#9d4edd' }, // Purple neon
-  { id: 2, name: 'Premio 2', color: '#1e1e2f' }, // Dark blue
-  { id: 3, name: 'Premio 3', color: '#c9184a' }, // Dark pink
-  { id: 4, name: 'Premio 4', color: '#7209b7' }, // Deep purple
-  { id: 5, name: 'Premio 5', color: '#2d1b69' }, // Navy purple
-  { id: 6, name: 'Premio 6', color: '#a663cc' }, // Light purple
-  { id: 7, name: 'Premio 7', color: '#560bad' }, // Dark violet
-  { id: 8, name: 'Premio 8', color: '#480ca8' }  // Royal purple
+  { id: 1, name: 'Premio 1', color: '#06b6d4' }, // Tropical cyan
+  { id: 2, name: 'Premio 2', color: '#fb923c' }, // Sunset orange
+  { id: 3, name: 'Premio 3', color: '#ec4899' }, // Coral pink
+  { id: 4, name: 'Premio 4', color: '#10b981' }, // Ocean green
+  { id: 5, name: 'Premio 5', color: '#f59e0b' }, // Golden yellow
+  { id: 6, name: 'Premio 6', color: '#8b5cf6' }, // Tropical purple
+  { id: 7, name: 'Premio 7', color: '#ef4444' }, // Sunset red
+  { id: 8, name: 'Premio 8', color: '#06d6a0' }  // Turquoise
 ])
 
 // Convert prizes to roulette format
@@ -355,24 +350,24 @@ const loadPrizes = async () => {
   }
 }
 
-// Get color for prize based on index - Dark theme
+// Get color for prize based on index - Tropical theme
 const getColorForIndex = (index) => {
   const colors = [
-    '#9d4edd', // Purple neon
-    '#1e1e2f', // Dark blue
-    '#c9184a', // Dark pink
-    '#7209b7', // Deep purple
-    '#2d1b69', // Navy purple
-    '#a663cc', // Light purple
-    '#560bad', // Dark violet
-    '#480ca8'  // Royal purple
+    '#06b6d4', // Tropical cyan
+    '#fb923c', // Sunset orange
+    '#ec4899', // Coral pink
+    '#10b981', // Ocean green
+    '#f59e0b', // Golden yellow
+    '#8b5cf6', // Tropical purple
+    '#ef4444', // Sunset red
+    '#06d6a0'  // Turquoise
   ]
   return colors[index % colors.length]
 }
 
 // Confetti animation styles
 const getConfettiStyle = (index) => {
-  const colors = ['#9d4edd', '#c9184a', '#7209b7', '#a663cc']
+  const colors = ['#06b6d4', '#fb923c', '#ec4899', '#10b981']
   const color = colors[index % colors.length]
   const left = Math.random() * 100
   const animationDelay = Math.random() * 3

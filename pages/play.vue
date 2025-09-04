@@ -4,7 +4,7 @@
       <!-- Header -->
       <div class="text-center mb-8">
         <h1 class="text-4xl font-bold text-gray-900 dark:text-white mb-2">
-          🎯 BonoCopas Wheel
+          🎯 Zona Barceló Wheel
         </h1>
         <p class="text-lg text-gray-600 dark:text-gray-300">
           ¡Gira la ruleta y gana increíbles premios!
@@ -82,9 +82,9 @@
 <script setup>
 // SEO
 useHead({
-  title: 'Jugar - BonoCopas Wheel',
+  title: 'Jugar - Zona Barceló Wheel',
   meta: [
-    { name: 'description', content: 'Gira la ruleta de BonoCopas y gana increíbles premios. ¡Entra y juega ahora!' }
+    { name: 'description', content: 'Gira la ruleta de Zona Barceló y gana increíbles premios. ¡Entra y juega ahora!' }
   ]
 })
 

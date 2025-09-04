@@ -9,38 +9,38 @@
     <!-- Background overlay -->
     <div class="flex items-end justify-center min-h-screen pt-4 px-4 pb-20 text-center sm:block sm:p-0">
       <div
-        class="fixed inset-0 bg-gray-500 bg-opacity-75 transition-opacity"
+        class="fixed inset-0 bg-gradient-to-br from-cyan-900/80 via-orange-900/80 to-pink-900/80 backdrop-blur-sm transition-opacity"
         aria-hidden="true"
         @click="closeModal"
       ></div>
 
       <!-- Modal panel -->
-      <div class="inline-block align-bottom bg-white dark:bg-gray-800 rounded-lg px-4 pt-5 pb-4 text-left overflow-hidden shadow-xl transform transition-all sm:my-8 sm:align-middle sm:max-w-lg sm:w-full sm:p-6 animate-bounce-in">
+      <div class="inline-block align-bottom bg-gradient-to-br from-white via-orange-50 to-cyan-50 rounded-xl px-4 pt-5 pb-4 text-left overflow-hidden shadow-2xl transform transition-all sm:my-8 sm:align-middle sm:max-w-lg sm:w-full sm:p-6 animate-bounce-in border-2 border-orange-200/50">
         <div class="sm:flex sm:items-start">
-          <div class="mx-auto flex-shrink-0 flex items-center justify-center h-12 w-12 rounded-full bg-green-100 dark:bg-green-900 sm:mx-0 sm:h-10 sm:w-10">
-            <svg class="h-6 w-6 text-green-600 dark:text-green-400" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+          <div class="mx-auto flex-shrink-0 flex items-center justify-center h-12 w-12 rounded-full bg-gradient-to-r from-cyan-100 to-orange-100 border-2 border-orange-300 sm:mx-0 sm:h-10 sm:w-10">
+            <svg class="h-6 w-6 text-orange-600" fill="none" viewBox="0 0 24 24" stroke="currentColor">
               <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z" />
             </svg>
           </div>
           <div class="mt-3 text-center sm:mt-0 sm:ml-4 sm:text-left">
-            <h3 class="text-lg leading-6 font-medium text-gray-900 dark:text-white" id="modal-title">
+            <h3 class="text-lg leading-6 font-medium text-orange-800" id="modal-title">
               🎉 ¡Felicitaciones!
             </h3>
             <div class="mt-2">
-              <p class="text-sm text-gray-500 dark:text-gray-400">
+              <p class="text-sm text-orange-600">
                 Has ganado:
               </p>
-              <div class="mt-4 p-4 bg-gradient-to-r from-blue-50 to-purple-50 dark:from-blue-900/20 dark:to-purple-900/20 rounded-lg border border-blue-200 dark:border-blue-700">
-                <h4 class="text-xl font-bold text-gray-900 dark:text-white mb-2">
+              <div class="mt-4 p-4 bg-gradient-to-r from-cyan-100 to-orange-100 rounded-lg border border-orange-300">
+                <h4 class="text-xl font-bold text-orange-800 mb-2">
                   {{ prize?.name }}
                 </h4>
-                <p v-if="prize?.description" class="text-gray-600 dark:text-gray-300">
+                <p v-if="prize?.description" class="text-orange-700">
                   {{ prize.description }}
                 </p>
               </div>
               
               <!-- Prize claim instructions -->
-              <div class="mt-4 p-4 bg-orange-50 dark:bg-orange-900/20 rounded-lg border border-orange-200 dark:border-orange-700">
+              <div class="mt-4 p-4 bg-gradient-to-r from-orange-100 to-pink-100 rounded-lg border border-orange-300">
                 <div class="flex items-start">
                   <div class="flex-shrink-0">
                     <svg class="w-5 h-5 text-orange-500 mt-0.5" fill="currentColor" viewBox="0 0 20 20">
@@ -48,10 +48,10 @@
                     </svg>
                   </div>
                   <div class="ml-3">
-                    <h5 class="text-sm font-semibold text-orange-800 dark:text-orange-200">
+                    <h5 class="text-sm font-semibold text-orange-800">
                       ⏰ Instrucciones importantes
                     </h5>
-                    <p class="text-sm text-orange-700 dark:text-orange-300 mt-1">
+                    <p class="text-sm text-orange-700 mt-1">
                       Para reclamar tu premio debes ir a la opción <strong>'Ver Mis Premios'</strong>. 
                       Tienes <strong>1 hora</strong> para reclamarlo ante el encargado de barra.
                     </p>
@@ -59,7 +59,7 @@
                 </div>
               </div>
               
-              <div class="mt-4 text-xs text-gray-500 dark:text-gray-400">
+              <div class="mt-4 text-xs text-orange-600">
                 <p>Fecha: {{ formatDate(spin?.date) }}</p>
                 <p>Expira: {{ formatDate(spin?.expiresAt) }}</p>
               </div>
@@ -69,14 +69,14 @@
         <div class="mt-5 sm:mt-4 sm:flex sm:flex-row-reverse">
           <button
             type="button"
-            class="w-full inline-flex justify-center rounded-md border border-transparent shadow-sm px-4 py-2 bg-green-600 text-base font-medium text-white hover:bg-green-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-green-500 sm:ml-3 sm:w-auto sm:text-sm transition-colors duration-200"
+            class="w-full inline-flex justify-center rounded-md border border-transparent shadow-sm px-4 py-2 bg-gradient-to-r from-cyan-500 to-orange-500 text-base font-medium text-white hover:from-cyan-600 hover:to-orange-600 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-orange-500 sm:ml-3 sm:w-auto sm:text-sm transition-all duration-200"
             @click="goToPrizes"
           >
             🏆 Ver Mis Premios
           </button>
           <button
             type="button"
-            class="mt-3 w-full inline-flex justify-center rounded-md border border-gray-300 dark:border-gray-600 shadow-sm px-4 py-2 bg-white dark:bg-gray-700 text-base font-medium text-gray-700 dark:text-gray-300 hover:bg-gray-50 dark:hover:bg-gray-600 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-blue-500 sm:mt-0 sm:w-auto sm:text-sm transition-colors duration-200"
+            class="mt-3 w-full inline-flex justify-center rounded-md border border-orange-300 shadow-sm px-4 py-2 bg-white text-base font-medium text-orange-700 hover:bg-orange-50 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-orange-500 sm:mt-0 sm:w-auto sm:text-sm transition-colors duration-200"
             @click="closeModal"
           >
             Cerrar

@@ -6,7 +6,7 @@
         🎛️ Panel de Administración
       </h1>
       <p class="mt-2 text-gray-600 dark:text-gray-400">
-        Gestiona la configuración, premios y usuarios de BonoCopas
+        Gestiona la configuración, premios y usuarios de Zona Barceló
       </p>
     </div>
 
