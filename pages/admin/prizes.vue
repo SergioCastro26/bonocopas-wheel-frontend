@@ -108,6 +108,9 @@
                     Premio
                   </th>
                   <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 dark:text-gray-300 uppercase tracking-wider">
+                    Tipo
+                  </th>
+                  <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 dark:text-gray-300 uppercase tracking-wider">
                     Probabilidad
                   </th>
                   <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 dark:text-gray-300 uppercase tracking-wider">
@@ -132,6 +135,16 @@
                         {{ prize.description }}
                       </div>
                     </div>
+                  </td>
+                  <td class="px-6 py-4 whitespace-nowrap">
+                    <span 
+                      class="inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium"
+                      :class="(prize.type || 'normal') === 'hot' 
+                        ? 'bg-gradient-to-r from-orange-500 to-red-600 text-white' 
+                        : 'bg-blue-100 text-blue-800 dark:bg-blue-900 dark:text-blue-200'"
+                    >
+                      {{ (prize.type || 'normal') === 'hot' ? '🔥 Hot' : '🎯 Normal' }}
+                    </span>
                   </td>
                   <td class="px-6 py-4 whitespace-nowrap">
                     <div class="flex items-center">
@@ -220,6 +233,23 @@
                   rows="3"
                   class="mt-1 block w-full px-3 py-2 border border-gray-300 dark:border-gray-600 rounded-md shadow-sm focus:outline-none focus:ring-blue-500 focus:border-blue-500 dark:bg-gray-700 dark:text-white sm:text-sm"
                 ></textarea>
+              </div>
+
+              <div>
+                <label for="type" class="block text-sm font-medium text-gray-700 dark:text-gray-300">
+                  Tipo de Premio
+                </label>
+                <select
+                  id="type"
+                  v-model="currentPrize.type"
+                  class="mt-1 block w-full px-3 py-2 border border-gray-300 dark:border-gray-600 rounded-md shadow-sm focus:outline-none focus:ring-blue-500 focus:border-blue-500 dark:bg-gray-700 dark:text-white sm:text-sm"
+                >
+                  <option value="normal">🎯 Ruleta Normal</option>
+                  <option value="hot">🔥 Ruleta Hot</option>
+                </select>
+                <p class="mt-1 text-xs text-gray-500 dark:text-gray-400">
+                  Los premios Hot solo aparecen en la Ruleta Hot exclusiva
+                </p>
               </div>
 
               <div class="grid grid-cols-2 gap-4">
@@ -311,7 +341,8 @@ const currentPrize = ref({
   description: '',
   probability: 0,
   stock: 0,
-  isActive: true
+  isActive: true,
+  type: 'normal'
 })
 
 // Computed
@@ -340,7 +371,8 @@ const openCreateModal = () => {
     description: '',
     probability: 0,
     stock: 0,
-    isActive: true
+    isActive: true,
+    type: 'normal'
   }
   showModal.value = true
 }
@@ -358,7 +390,8 @@ const closeModal = () => {
     description: '',
     probability: 0,
     stock: 0,
-    isActive: true
+    isActive: true,
+    type: 'normal'
   }
 }
 

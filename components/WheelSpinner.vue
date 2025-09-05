@@ -120,6 +120,12 @@
 <script setup>
 const { $api } = useNuxtApp()
 const emit = defineEmits(['prize-won'])
+const props = defineProps({
+  wheelType: {
+    type: String,
+    default: 'normal' // 'normal' or 'hot'
+  }
+})
 
 // Dynamic import to avoid SSR issues
 const Roulette = ref(null)
@@ -242,8 +248,10 @@ const spin = async () => {
   try {
     isSpinning.value = true
     
-    // Call API to play spin
-    const response = await $api.post('/spin/play', {}, {
+    // Call API to play spin with wheel type
+    const response = await $api.post('/spin/play', {
+      wheelType: props.wheelType
+    }, {
       withCredentials: true
     })
 
@@ -328,9 +336,13 @@ const startCountdown = () => {
 const loadPrizes = async () => {
   try {
     const response = await $api.get('/spin/prizes', {
+      params: {
+        wheelType: props.wheelType
+      },
       withCredentials: true
     })
     
+    // The backend already filters by wheelType, so we just need active prizes
     const activePrizes = response.data.prizes.filter(p => p.isActive && p.stock > 0)
     
     if (activePrizes.length > 0) {
@@ -341,8 +353,13 @@ const loadPrizes = async () => {
         color: getColorForIndex(index),
         probability: prize.probability,
         stock: prize.stock,
-        description: prize.description
+        description: prize.description,
+        type: prize.type || 'normal'
       }))
+    } else {
+      // No prizes available for this wheel type
+      console.warn(`No active prizes found for wheel type: ${props.wheelType}`)
+      prizes.value = []
     }
   } catch (error) {
     console.error('Error loading prizes:', error)

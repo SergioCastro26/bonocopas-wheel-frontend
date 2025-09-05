@@ -24,6 +24,34 @@
           Salir
         </button>
       </div>
+
+      <!-- Wheel Type Tabs -->
+      <div class="flex justify-center mb-8">
+        <div class="bg-white/20 backdrop-blur-sm rounded-lg p-1 shadow-lg border border-white/30">
+          <button
+            @click="activeTab = 'normal'"
+            :class="[
+              'px-6 py-2 text-sm font-medium rounded-md transition-all duration-200',
+              activeTab === 'normal'
+                ? 'bg-white text-blue-800 shadow-md'
+                : 'text-white hover:bg-white/10'
+            ]"
+          >
+            🎯 Ruleta Normal
+          </button>
+          <button
+            @click="activeTab = 'hot'"
+            :class="[
+              'px-6 py-2 text-sm font-medium rounded-md transition-all duration-200',
+              activeTab === 'hot'
+                ? 'bg-gradient-to-r from-orange-500 to-red-600 text-white shadow-md'
+                : 'text-white hover:bg-white/10'
+            ]"
+          >
+            🔥 Ruleta Hot
+          </button>
+        </div>
+      </div>
     </div>
 
     <!-- Warning Message -->
@@ -54,19 +82,28 @@
     </div>
 
     <!-- Empty State -->
-    <div v-else-if="spins.length === 0" class="text-center py-12">
+    <div v-else-if="filteredSpins.length === 0" class="text-center py-12">
       <div class="mx-auto h-24 w-24 bg-white/80 backdrop-blur-sm rounded-full flex items-center justify-center mb-4 shadow-lg">
         <svg class="h-12 w-12 text-gray-600" fill="none" viewBox="0 0 24 24" stroke="currentColor">
           <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 8v4l3 3m6-3a9 9 0 11-18 0 9 9 0 0118 0z" />
         </svg>
       </div>
-      <h3 class="text-lg font-medium text-white drop-shadow-lg mb-2">No tienes premios aún</h3>
-      <p class="text-white/90 drop-shadow-lg mb-6">¡Ve a la ruleta y gana tu primer premio!</p>
+      <h3 class="text-lg font-medium text-white drop-shadow-lg mb-2">
+        {{ activeTab === 'hot' ? 'No tienes premios de Ruleta Hot aún' : 'No tienes premios de Ruleta Normal aún' }}
+      </h3>
+      <p class="text-white/90 drop-shadow-lg mb-6">
+        {{ activeTab === 'hot' ? '¡Accede a la Ruleta Hot y gana premios exclusivos!' : '¡Ve a la ruleta y gana tu primer premio!' }}
+      </p>
       <NuxtLink
-        to="/wheel"
-        class="inline-flex items-center px-4 py-2 border border-transparent text-sm font-medium rounded-md text-white bg-blue-600 hover:bg-blue-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-blue-500 transition-colors duration-200"
+        :to="activeTab === 'hot' ? '/wheelHot' : '/wheel'"
+        :class="[
+          'inline-flex items-center px-4 py-2 border border-transparent text-sm font-medium rounded-md text-white focus:outline-none focus:ring-2 focus:ring-offset-2 transition-colors duration-200',
+          activeTab === 'hot' 
+            ? 'bg-gradient-to-r from-orange-500 to-red-600 hover:from-orange-600 hover:to-red-700 focus:ring-orange-500' 
+            : 'bg-blue-600 hover:bg-blue-700 focus:ring-blue-500'
+        ]"
       >
-        🎯 Ir a la Ruleta
+        {{ activeTab === 'hot' ? '🔥 Ir a Ruleta Hot' : '🎯 Ir a la Ruleta' }}
       </NuxtLink>
     </div>
 
@@ -75,7 +112,7 @@
       <!-- Active Prizes -->
       <div v-if="activePrizes.length > 0" class="mb-12">
         <h2 class="text-2xl font-bold text-white drop-shadow-lg mb-6">
-          🎯 Premios Activos ({{ activePrizes.length }})
+          {{ activeTab === 'hot' ? '🔥 Premios Hot Activos' : '🎯 Premios Activos' }} ({{ activePrizes.length }})
         </h2>
         <div class="grid gap-6 md:grid-cols-2 lg:grid-cols-3">
           <div
@@ -85,9 +122,14 @@
           >
             <div class="flex items-start justify-between mb-4">
               <div class="flex-1">
-                <h3 class="text-lg font-semibold text-gray-900 dark:text-white">
-                  {{ spin.prize.name }}
-                </h3>
+                <div class="flex items-center gap-2 mb-1">
+                  <h3 class="text-lg font-semibold text-gray-900">
+                    {{ spin.prize.name }}
+                  </h3>
+                  <span v-if="activeTab === 'hot'" class="text-xs bg-gradient-to-r from-orange-500 to-red-600 text-white px-2 py-0.5 rounded-full font-medium">
+                    🔥 HOT
+                  </span>
+                </div>
                 <p v-if="spin.prize.description" class="text-sm text-gray-600 dark:text-gray-400 mt-1">
                   {{ spin.prize.description }}
                 </p>
@@ -103,13 +145,13 @@
                 <svg class="w-4 h-4 text-orange-500 mr-2" fill="currentColor" viewBox="0 0 20 20">
                   <path fill-rule="evenodd" d="M10 18a8 8 0 100-16 8 8 0 000 16zm1-12a1 1 0 10-2 0v4a1 1 0 00.293.707l2.828 2.829a1 1 0 101.415-1.415L11 9.586V6z" clip-rule="evenodd" />
                 </svg>
-                <span class="text-sm font-medium text-orange-800 dark:text-orange-200">
+                <span class="text-sm font-medium text-orange-800 dark:text-orange-600">
                   Expira en: {{ getTimeRemaining(spin.expiresAt) }}
                 </span>
               </div>
             </div>
 
-            <div class="text-xs text-gray-500 dark:text-gray-400 mb-4">
+            <div class="text-xs text-gray-600 mb-4">
               <p>Ganado: {{ formatDate(spin.date) }}</p>
               <p>Expira: {{ formatDate(spin.expiresAt) }}</p>
             </div>
@@ -135,7 +177,7 @@
       <!-- Expired Prizes -->
       <div v-if="expiredPrizes.length > 0" class="mb-12">
         <h2 class="text-2xl font-bold text-white drop-shadow-lg mb-6">
-          ⏰ Premios Expirados ({{ expiredPrizes.length }})
+          {{ activeTab === 'hot' ? '⏰ Premios Hot Expirados' : '⏰ Premios Expirados' }} ({{ expiredPrizes.length }})
         </h2>
         <div class="grid gap-6 md:grid-cols-2 lg:grid-cols-3">
           <div
@@ -145,9 +187,14 @@
           >
             <div class="flex items-start justify-between mb-4">
               <div class="flex-1">
-                <h3 class="text-lg font-semibold text-gray-900">
-                  {{ spin.prize.name }}
-                </h3>
+                <div class="flex items-center gap-2 mb-1">
+                  <h3 class="text-lg font-semibold text-gray-900">
+                    {{ spin.prize.name }}
+                  </h3>
+                  <span v-if="activeTab === 'hot'" class="text-xs bg-gradient-to-r from-orange-500 to-red-600 text-white px-2 py-0.5 rounded-full font-medium">
+                    🔥 HOT
+                  </span>
+                </div>
                 <p v-if="spin.prize.description" class="text-sm text-gray-700 mt-1">
                   {{ spin.prize.description }}
                 </p>
@@ -175,7 +222,7 @@
       <!-- Claimed Prizes -->
       <div v-if="claimedPrizes.length > 0" class="mb-12">
         <h2 class="text-2xl font-bold text-white drop-shadow-lg mb-6">
-          ✅ Premios Reclamados ({{ claimedPrizes.length }})
+          {{ activeTab === 'hot' ? '✅ Premios Hot Reclamados' : '✅ Premios Reclamados' }} ({{ claimedPrizes.length }})
         </h2>
         <div class="grid gap-6 md:grid-cols-2 lg:grid-cols-3">
           <div
@@ -185,9 +232,14 @@
           >
             <div class="flex items-start justify-between mb-4">
               <div class="flex-1">
-                <h3 class="text-lg font-semibold text-gray-900">
-                  {{ spin.prize.name }}
-                </h3>
+                <div class="flex items-center gap-2 mb-1">
+                  <h3 class="text-lg font-semibold text-gray-900">
+                    {{ spin.prize.name }}
+                  </h3>
+                  <span v-if="activeTab === 'hot'" class="text-xs bg-gradient-to-r from-orange-500 to-red-600 text-white px-2 py-0.5 rounded-full font-medium">
+                    🔥 HOT
+                  </span>
+                </div>
                 <p v-if="spin.prize.description" class="text-sm text-gray-700 mt-1">
                   {{ spin.prize.description }}
                 </p>
@@ -269,6 +321,7 @@ const isClaimingPrize = ref(null)
 const countdownInterval = ref(null)
 const showClaimModal = ref(false)
 const claimMessage = ref('')
+const activeTab = ref('normal')
 
 // Check authentication on mount
 onMounted(async () => {
@@ -307,18 +360,25 @@ onUnmounted(() => {
 })
 
 // Computed properties
+const filteredSpins = computed(() => {
+  return spins.value.filter(spin => {
+    const wheelType = spin.wheelType || 'normal'
+    return wheelType === activeTab.value
+  })
+})
+
 const activePrizes = computed(() => {
   const now = new Date()
-  return spins.value.filter(spin => !spin.isExpired && !spin.isClaimed && now <= new Date(spin.expiresAt))
+  return filteredSpins.value.filter(spin => !spin.isExpired && !spin.isClaimed && now <= new Date(spin.expiresAt))
 })
 
 const expiredPrizes = computed(() => {
   const now = new Date()
-  return spins.value.filter(spin => spin.isExpired || (!spin.isClaimed && now > new Date(spin.expiresAt)))
+  return filteredSpins.value.filter(spin => spin.isExpired || (!spin.isClaimed && now > new Date(spin.expiresAt)))
 })
 
 const claimedPrizes = computed(() => {
-  return spins.value.filter(spin => spin.isClaimed)
+  return filteredSpins.value.filter(spin => spin.isClaimed)
 })
 
 // Methods
