@@ -407,6 +407,27 @@ onMounted(() => {
 .wheel-container {
   max-width: 100vw;
   overflow: visible;
+  position: relative;
+}
+
+/* Fix for the wheel indicator arrow */
+:deep(.wheel-container-indicator) {
+  position: relative;
+}
+
+:deep(.wheel-container-indicator::before) {
+  content: "";
+  position: absolute;
+  z-index: 4;
+  width: 0;
+  height: 0;
+  border-left: 30px solid transparent;
+  border-right: 30px solid transparent;
+  border-top: 30px solid #ffffff;
+  transform: translateX(-50%);
+  top: -10px;
+  left: 50%;
+  filter: drop-shadow(0 2px 4px rgba(0, 0, 0, 0.3));
 }
 
 .confetti-piece {
@@ -432,6 +453,14 @@ onMounted(() => {
 @media (max-width: 768px) {
   .wheel-container {
     transform: scale(0.9);
+  }
+  
+  /* Adjust arrow size for mobile */
+  :deep(.wheel-container-indicator::before) {
+    border-left-width: 30px;
+    border-right-width: 30px;
+    border-top-width: 30px;
+    top: -8px;
   }
 }
 
