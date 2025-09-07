@@ -5,6 +5,8 @@
     aria-labelledby="modal-title"
     role="dialog"
     aria-modal="true"
+    @keydown.esc="closeModal"
+    tabindex="-1"
   >
     <!-- Background overlay -->
     <div class="flex items-end justify-center min-h-screen pt-4 px-4 pb-20 text-center sm:block sm:p-0">
@@ -127,18 +129,6 @@ const goToPrizes = () => {
   navigateTo('/history')
 }
 
-// Close modal on escape key
-onMounted(() => {
-  const handleEscape = (e) => {
-    if (e.key === 'Escape' && props.isOpen) {
-      closeModal()
-    }
-  }
-  
-  document.addEventListener('keydown', handleEscape)
-  
-  onUnmounted(() => {
-    document.removeEventListener('keydown', handleEscape)
-  })
-})
+// Handle escape key via template keydown event instead of addEventListener
+// This avoids SSR issues with document access
 </script>
