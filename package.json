@@ -19,8 +19,9 @@
     "@heroicons/vue": "^2.0.18",
     "@nuxt/ui": "^2.11.1",
     "@nuxtjs/color-mode": "^3.3.2",
-    "@vueuse/nuxt": "^10.5.0",
+    "@vueuse/nuxt": "^13.9.0",
     "axios": "^1.6.2",
+    "canvas-confetti": "^1.9.3",
     "nuxt": "^4.1.1",
     "qr-code-styling": "^1.6.0-rc.1",
     "vue3-roulette": "^0.3.3"

@@ -1,10 +1,10 @@
 <template>
-  <div class="min-h-screen bg-cover bg-center bg-no-repeat bg-fixed relative" 
+  <div class="min-h-screen w-full overflow-x-hidden bg-cover bg-center bg-no-repeat bg-fixed relative" 
        style="background-image: url('https://res.cloudinary.com/dphpfdsk3/image/upload/v1756999777/paisaje-natural-impresionante_ge01xh.jpg');">
     <!-- Dark overlay with gradient for premium feel -->
     <div class="absolute inset-0 bg-gradient-to-br from-black/60 via-orange-900/30 to-red-900/40"></div>
     
-    <div class="relative z-10 max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-12">
+    <div class="relative z-10 w-full max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-6 sm:py-12">
     <!-- Premium Header -->
     <div class="text-center mb-12">
       <div class="inline-flex items-center justify-center w-16 h-16 bg-gradient-to-r from-orange-500 to-red-600 rounded-full mb-6 shadow-2xl">
@@ -38,8 +38,8 @@
     </div>
 
     <!-- Premium Wheel Component -->
-    <div class="flex justify-center mb-12">
-      <div class="bg-gradient-to-br from-orange-500/10 via-red-600/10 to-pink-600/10 backdrop-blur-md rounded-3xl p-8 shadow-2xl border border-orange-400/30 relative overflow-hidden">
+    <div class="flex justify-center mb-6 sm:mb-12 px-2">
+      <div class="w-full max-w-4xl bg-gradient-to-br from-orange-500/10 via-red-600/10 to-pink-600/10 backdrop-blur-md rounded-3xl p-4 sm:p-6 shadow-2xl border border-orange-400/30 relative overflow-hidden">
         <!-- Animated background elements -->
         <div class="absolute inset-0 bg-gradient-to-r from-orange-500/5 to-red-600/5 animate-pulse"></div>
         <div class="absolute top-0 left-0 w-full h-full">
@@ -49,13 +49,33 @@
         </div>
         
         <div class="relative z-10">
-          <WheelSpinner @prize-won="onPrizeWon" :wheelType="'hot'" />
+          <ModernPrizeWheel
+            v-if="hotPrizes.length > 0"
+            :prizes="hotPrizes"
+            :wheel-size="wheelSize"
+            :animation-duration="4000"
+            :min-spins="3"
+            :max-spins="6"
+            wheel-type="hot"
+            @winner-selected="onWinnerSelected"
+            @spin-start="onSpinStart"
+            @spin-end="onSpinEnd"
+          />
+          <div v-else-if="isLoadingPrizes" class="flex justify-center items-center py-12 sm:py-20">
+            <div class="text-center">
+              <div class="w-12 h-12 sm:w-16 sm:h-16 border-4 border-orange-500 border-t-transparent rounded-full animate-spin mx-auto mb-4"></div>
+              <p class="text-white text-base sm:text-lg">Cargando premios hot...</p>
+            </div>
+          </div>
+          <div v-else class="text-center py-12 sm:py-20">
+            <p class="text-white text-base sm:text-lg">No hay premios hot disponibles</p>
+          </div>
         </div>
       </div>
     </div>
 
     <!-- Premium Actions -->
-    <div class="flex justify-center space-x-4 mb-12">
+    <div class="flex flex-col sm:flex-row justify-center gap-3 sm:gap-4 mb-6 sm:mb-12 px-4">
       <NuxtLink 
         to="/history" 
         class="inline-flex items-center px-6 py-3 bg-gradient-to-r from-orange-500/20 to-red-600/20 backdrop-blur-sm border border-orange-400/30 shadow-2xl text-base font-medium rounded-md text-white hover:from-orange-500/30 hover:to-red-600/30 transition-all duration-200 transform hover:scale-105"
@@ -148,6 +168,46 @@ const { $api } = useNuxtApp()
 const showPrizeModal = ref(false)
 const wonSpin = ref(null)
 
+// Hot wheel state
+const hotPrizes = ref([])
+const isLoadingPrizes = ref(true)
+
+// Responsive wheel size - same as normal wheel but for hot prizes
+const wheelSize = computed(() => {
+  if (process.client) {
+    const screenWidth = window.innerWidth
+    const screenHeight = window.innerHeight
+    
+    if (screenWidth < 640) {
+      // Mobile: Use 85% of screen width, ensure vertical fit
+      const maxWidth = Math.min(screenWidth * 0.85, screenHeight * 0.5)
+      return Math.max(320, Math.min(450, maxWidth))
+    }
+    if (screenWidth < 768) return 500 // Small tablets
+    if (screenWidth < 1024) return 580 // Tablets
+    if (screenWidth < 1280) return 650 // Small desktop
+    if (screenWidth < 1536) return 720 // Large desktop
+    return 800 // Extra large desktop
+  }
+  return 650 // Default for SSR
+})
+
+// Load hot prizes
+const loadHotPrizes = async () => {
+  try {
+    isLoadingPrizes.value = true
+    // Call the API with wheelType=hot to get only hot prizes
+    const response = await $api.get('/spin/status?wheelType=hot')
+    hotPrizes.value = response.data.prizes || []
+    console.log('🔥 Hot prizes loaded:', hotPrizes.value.length)
+  } catch (error) {
+    console.error('Error loading hot prizes:', error)
+    hotPrizes.value = []
+  } finally {
+    isLoadingPrizes.value = false
+  }
+}
+
 // Check authentication and hot wheel access on mount
 onMounted(async () => {
   // Check if user is authenticated
@@ -159,11 +219,37 @@ onMounted(async () => {
     }
   }
   
-  // Check if user has hot wheel access (this should be handled by middleware)
-  // For now, we'll assume if they reached this page, they have access
+  // Load hot prizes
+  await loadHotPrizes()
 })
 
-// Handle prize won
+// Handle winner selected from modern wheel
+const onWinnerSelected = (winner) => {
+  console.log('🔥 Premio hot ganado:', winner)
+}
+
+const onSpinStart = () => {
+  console.log('🔥 Iniciando giro hot...')
+}
+
+const onSpinEnd = (winner) => {
+  console.log('✅ Giro hot completado, ganador:', winner.name)
+  // Create a spin object compatible with the existing modal
+  wonSpin.value = {
+    id: Date.now(), // Temporary ID
+    prize: {
+      id: winner.id,
+      name: winner.name,
+      description: winner.description
+    },
+    isClaimed: false,
+    date: new Date(),
+    type: 'hot'
+  }
+  showPrizeModal.value = true
+}
+
+// Handle prize won (legacy - keeping for compatibility)
 const onPrizeWon = (spin) => {
   wonSpin.value = spin
   showPrizeModal.value = true

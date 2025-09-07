@@ -1,10 +1,10 @@
 <template>
-  <div class="min-h-screen bg-cover bg-center bg-no-repeat bg-fixed relative" 
+  <div class="min-h-screen w-full overflow-x-hidden bg-cover bg-center bg-no-repeat bg-fixed relative" 
        style="background-image: url('https://res.cloudinary.com/dphpfdsk3/image/upload/v1756999777/paisaje-natural-impresionante_ge01xh.jpg');">
     <!-- Dark overlay for better text readability -->
     <div class="absolute inset-0 bg-black/40"></div>
     
-    <div class="relative z-10 max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-12">
+    <div class="relative z-10 w-full max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-6 sm:py-12">
     <!-- Wheel Disabled Banner -->
     <div v-if="!wheelConfig?.isActive" class="fixed top-0 left-0 right-0 z-50 bg-gradient-to-r from-orange-500 to-red-600 text-white shadow-lg">
       <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-3">
@@ -86,20 +86,40 @@
       </div>
     </div>
 
-    <!-- Wheel Component -->
-    <div class="flex justify-center mb-12">
-      <div class="bg-white/10 backdrop-blur-sm rounded-3xl p-8 shadow-2xl border border-white/20">
-        <WheelSpinner @prize-won="onPrizeWon" />
+    <!-- Modern Wheel Component -->
+    <div class="flex justify-center mb-6 sm:mb-12 px-2">
+      <div class="w-full max-w-4xl bg-white/10 backdrop-blur-sm rounded-3xl shadow-2xl border border-white/20 p-4 sm:p-6">
+        <ModernPrizeWheel
+          v-if="prizes.length > 0"
+          :prizes="prizes"
+          :wheel-size="wheelSize"
+          :animation-duration="4000"
+          :min-spins="3"
+          :max-spins="6"
+          wheel-type="normal"
+          @winner-selected="onWinnerSelected"
+          @spin-start="onSpinStart"
+          @spin-end="onSpinEnd"
+        />
+        <div v-else-if="isLoadingPrizes" class="flex justify-center items-center py-12 sm:py-20">
+          <div class="text-center">
+            <div class="w-12 h-12 sm:w-16 sm:h-16 border-4 border-purple-500 border-t-transparent rounded-full animate-spin mx-auto mb-4"></div>
+            <p class="text-white text-base sm:text-lg">Cargando premios...</p>
+          </div>
+        </div>
+        <div v-else class="text-center py-12 sm:py-20">
+          <p class="text-white text-base sm:text-lg">No hay premios disponibles</p>
+        </div>
       </div>
     </div>
 
     <!-- Quick Actions -->
-    <div class="flex justify-center space-x-4 mb-12">
+    <div class="flex flex-col sm:flex-row justify-center gap-3 sm:gap-4 mb-6 sm:mb-12 px-4">
       <NuxtLink 
         to="/history" 
-        class="inline-flex items-center px-6 py-3 bg-white/20 backdrop-blur-sm border border-white/30 shadow-lg text-base font-medium rounded-md text-white hover:bg-white/30 transition-all duration-200"
+        class="inline-flex items-center justify-center px-4 sm:px-6 py-3 bg-white/20 backdrop-blur-sm border border-white/30 shadow-lg text-sm sm:text-base font-medium rounded-md text-white hover:bg-white/30 transition-all duration-200"
       >
-        <svg class="w-5 h-5 mr-2" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+        <svg class="w-4 h-4 sm:w-5 sm:h-5 mr-2" fill="none" stroke="currentColor" viewBox="0 0 24 24">
           <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 8v4l3 3m6-3a9 9 0 11-18 0 9 9 0 0118 0z" />
         </svg>
         Ver Mis Premios
@@ -107,9 +127,9 @@
       
       <button 
         @click="refreshPage"
-        class="inline-flex items-center px-6 py-3 bg-white/20 backdrop-blur-sm border border-white/30 shadow-lg text-base font-medium rounded-md text-white hover:bg-white/30 transition-all duration-200"
+        class="inline-flex items-center justify-center px-4 sm:px-6 py-3 bg-white/20 backdrop-blur-sm border border-white/30 shadow-lg text-sm sm:text-base font-medium rounded-md text-white hover:bg-white/30 transition-all duration-200"
       >
-        <svg class="w-5 h-5 mr-2" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+        <svg class="w-4 h-4 sm:w-5 sm:h-5 mr-2" fill="none" stroke="currentColor" viewBox="0 0 24 24">
           <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 4v5h.582m15.356 2A8.001 8.001 0 004.582 9m0 0H9m11 11v-5h-.581m0 0a8.003 8.003 0 01-15.357-2m15.357 2H15" />
         </svg>
         Actualizar
@@ -126,7 +146,7 @@
 
     <!-- Hot Wheel Access Modal -->
     <div v-if="showHotWheelModal" class="fixed inset-0 bg-gray-600 bg-opacity-50 overflow-y-auto h-full w-full z-50 flex items-center justify-center p-4">
-      <div class="relative bg-white rounded-lg shadow-xl max-w-md w-full mx-auto">
+      <div class="relative bg-white rounded-lg shadow-xl max-w-sm sm:max-w-md w-full mx-auto">
         <div class="p-6">
           <div class="flex items-center justify-center w-12 h-12 mx-auto bg-gradient-to-r from-orange-500 to-red-600 rounded-full mb-4">
             <svg class="w-6 h-6 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24">
@@ -205,14 +225,40 @@ const codeError = ref('')
 
 // Wheel configuration state
 const wheelConfig = ref(null)
+const prizes = ref([])
+const isLoadingPrizes = ref(true)
 
-// Load wheel configuration
+// Responsive wheel size - maximum sizes for optimal visibility
+const wheelSize = computed(() => {
+  if (process.client) {
+    const screenWidth = window.innerWidth
+    const screenHeight = window.innerHeight
+    
+    if (screenWidth < 640) {
+      // Mobile: Use 85% of screen width, ensure vertical fit
+      const maxWidth = Math.min(screenWidth * 0.85, screenHeight * 0.5)
+      return Math.max(320, Math.min(450, maxWidth))
+    }
+    if (screenWidth < 768) return 500 // Small tablets
+    if (screenWidth < 1024) return 580 // Tablets
+    if (screenWidth < 1280) return 650 // Small desktop
+    if (screenWidth < 1536) return 720 // Large desktop
+    return 800 // Extra large desktop
+  }
+  return 650 // Default for SSR
+})
+
+// Load wheel configuration and prizes
 const loadWheelConfig = async () => {
   try {
+    isLoadingPrizes.value = true
     const response = await $api.get('/spin/status')
     wheelConfig.value = response.data.config
+    prizes.value = response.data.prizes || []
   } catch (error) {
     console.error('Error loading wheel config:', error)
+  } finally {
+    isLoadingPrizes.value = false
   }
 }
 
@@ -230,7 +276,32 @@ onMounted(async () => {
   await loadWheelConfig()
 })
 
-// Handle prize won
+// Handle winner selected from modern wheel
+const onWinnerSelected = (winner) => {
+  console.log('🎉 Premio ganado:', winner)
+}
+
+const onSpinStart = () => {
+  console.log('🎯 Iniciando giro...')
+}
+
+const onSpinEnd = (winner) => {
+  console.log('✅ Giro completado, ganador:', winner.name)
+  // Create a spin object compatible with the existing modal
+  wonSpin.value = {
+    id: Date.now(), // Temporary ID
+    prize: {
+      id: winner.id,
+      name: winner.name,
+      description: winner.description
+    },
+    isClaimed: false,
+    date: new Date()
+  }
+  showPrizeModal.value = true
+}
+
+// Handle prize won (legacy - keeping for compatibility)
 const onPrizeWon = (spin) => {
   wonSpin.value = spin
   showPrizeModal.value = true
