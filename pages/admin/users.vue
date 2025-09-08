@@ -170,6 +170,9 @@
                     Rol
                   </th>
                   <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 dark:text-gray-300 uppercase tracking-wider">
+                    Tipo Usuario
+                  </th>
+                  <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 dark:text-gray-300 uppercase tracking-wider">
                     Giros
                   </th>
                   <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 dark:text-gray-300 uppercase tracking-wider">
@@ -213,6 +216,29 @@
                     >
                       {{ user.role === 'admin' ? 'Administrador' : 'Usuario' }}
                     </span>
+                  </td>
+                  <td class="px-6 py-4 whitespace-nowrap">
+                    <div class="flex items-center space-x-2">
+                      <span 
+                        class="inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium"
+                        :class="user.userType === 'custom' 
+                          ? 'bg-blue-100 text-blue-800 dark:bg-blue-900 dark:text-blue-200' 
+                          : 'bg-green-100 text-green-800 dark:bg-green-900 dark:text-green-200'"
+                      >
+                        {{ user.userType === 'custom' ? 'Personalizado' : 'Normal' }}
+                      </span>
+                      <button
+                        v-if="user.role !== 'admin'"
+                        @click="openUserSettingsModal(user)"
+                        class="text-blue-600 hover:text-blue-900 dark:text-blue-400 dark:hover:text-blue-200 text-xs"
+                        title="Configurar usuario"
+                      >
+                        ⚙️
+                      </button>
+                    </div>
+                    <div v-if="user.userType === 'custom'" class="text-xs text-gray-500 dark:text-gray-400 mt-1">
+                      {{ user.customDailySpins }} giros/día
+                    </div>
                   </td>
                   <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-900 dark:text-white">
                     <div class="flex items-center">
@@ -320,6 +346,78 @@
         </div>
       </div>
     </div>
+
+    <!-- User Settings Modal -->
+    <div v-if="showUserSettingsModal" class="fixed inset-0 bg-gray-600 bg-opacity-50 overflow-y-auto h-full w-full z-50" @click="closeUserSettingsModal">
+      <div class="relative top-20 mx-auto p-5 border w-96 shadow-lg rounded-md bg-white dark:bg-gray-800" @click.stop>
+        <div class="mt-3">
+          <div class="flex items-center justify-between mb-4">
+            <h3 class="text-lg font-medium text-gray-900 dark:text-white">
+              Configurar Usuario
+            </h3>
+            <button @click="closeUserSettingsModal" class="text-gray-400 hover:text-gray-600 dark:hover:text-gray-200">
+              <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12"></path>
+              </svg>
+            </button>
+          </div>
+          
+          <div v-if="selectedUser" class="space-y-4">
+            <div>
+              <p class="text-sm text-gray-600 dark:text-gray-400 mb-4">
+                Usuario: <strong>{{ selectedUser.email }}</strong>
+              </p>
+            </div>
+
+            <div>
+              <label class="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-2">
+                Tipo de Usuario
+              </label>
+              <select
+                v-model="userSettingsForm.userType"
+                class="w-full px-3 py-2 border border-gray-300 dark:border-gray-600 rounded-md shadow-sm focus:outline-none focus:ring-blue-500 focus:border-blue-500 dark:bg-gray-700 dark:text-white"
+              >
+                <option value="normal">Normal (1 giro cada 24h)</option>
+                <option value="custom">Personalizado (configurar límite)</option>
+              </select>
+            </div>
+
+            <div v-if="userSettingsForm.userType === 'custom'">
+              <label class="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-2">
+                Giros Diarios Permitidos
+              </label>
+              <input
+                v-model.number="userSettingsForm.customDailySpins"
+                type="number"
+                min="1"
+                max="50"
+                class="w-full px-3 py-2 border border-gray-300 dark:border-gray-600 rounded-md shadow-sm focus:outline-none focus:ring-blue-500 focus:border-blue-500 dark:bg-gray-700 dark:text-white"
+                placeholder="Número de giros por día"
+              />
+              <p class="text-xs text-gray-500 dark:text-gray-400 mt-1">
+                Entre 1 y 50 giros por día
+              </p>
+            </div>
+
+            <div class="flex justify-end space-x-3 pt-4">
+              <button
+                @click="closeUserSettingsModal"
+                class="px-4 py-2 text-sm font-medium text-gray-700 dark:text-gray-300 bg-gray-100 dark:bg-gray-600 hover:bg-gray-200 dark:hover:bg-gray-500 rounded-md"
+              >
+                Cancelar
+              </button>
+              <button
+                @click="updateUserSettings"
+                :disabled="isUpdatingSettings"
+                class="px-4 py-2 text-sm font-medium text-white bg-blue-600 hover:bg-blue-700 disabled:opacity-50 disabled:cursor-not-allowed rounded-md"
+              >
+                {{ isUpdatingSettings ? 'Guardando...' : 'Guardar' }}
+              </button>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
   </div>
 </template>
 
@@ -336,6 +434,15 @@ const totalUsers = ref(0)
 const searchQuery = ref('')
 const roleFilter = ref('')
 const sortBy = ref('email')
+
+// User Settings Modal State
+const showUserSettingsModal = ref(false)
+const selectedUser = ref(null)
+const isUpdatingSettings = ref(false)
+const userSettingsForm = ref({
+  userType: 'normal',
+  customDailySpins: 1
+})
 
 // Computed
 const currentUserId = computed(() => currentUser.value?.id)
@@ -447,6 +554,68 @@ const formatDate = (dateString) => {
     hour: '2-digit',
     minute: '2-digit'
   })
+}
+
+const openUserSettingsModal = (user) => {
+  selectedUser.value = user
+  userSettingsForm.value = {
+    userType: user.userType || 'normal',
+    customDailySpins: user.customDailySpins || 1
+  }
+  showUserSettingsModal.value = true
+}
+
+const closeUserSettingsModal = () => {
+  showUserSettingsModal.value = false
+  selectedUser.value = null
+  userSettingsForm.value = {
+    userType: 'normal',
+    customDailySpins: 1
+  }
+}
+
+const updateUserSettings = async () => {
+  if (!selectedUser.value) return
+
+  // Validation
+  if (userSettingsForm.value.userType === 'custom') {
+    if (!userSettingsForm.value.customDailySpins || 
+        userSettingsForm.value.customDailySpins < 1 || 
+        userSettingsForm.value.customDailySpins > 50) {
+      alert('Los giros diarios deben estar entre 1 y 50')
+      return
+    }
+  }
+
+  try {
+    isUpdatingSettings.value = true
+    
+    const updateData = {
+      userType: userSettingsForm.value.userType,
+      customDailySpins: userSettingsForm.value.userType === 'custom' 
+        ? userSettingsForm.value.customDailySpins 
+        : 1
+    }
+
+    await $api.put(`/admin/users/${selectedUser.value._id}/settings`, updateData, {
+      withCredentials: true
+    })
+    
+    // Update local state
+    const userIndex = users.value.findIndex(u => u._id === selectedUser.value._id)
+    if (userIndex !== -1) {
+      users.value[userIndex].userType = updateData.userType
+      users.value[userIndex].customDailySpins = updateData.customDailySpins
+    }
+    
+    closeUserSettingsModal()
+    
+  } catch (error) {
+    console.error('Error updating user settings:', error)
+    alert(error.response?.data?.message || 'Error al actualizar la configuración del usuario')
+  } finally {
+    isUpdatingSettings.value = false
+  }
 }
 
 // Watch for filter changes
